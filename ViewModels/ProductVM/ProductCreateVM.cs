@@ -18,7 +18,6 @@ namespace WebApplication1.ViewModels.ProductVM
         [Range(0, 100)]
         public float Discount { get; set; }
         public ushort Quantity { get; set; }
-        public string ImageUrl { get; set; }
         public int CategoryId { get; set; }
     }
 }

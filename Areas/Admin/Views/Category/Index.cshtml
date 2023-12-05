@@ -63,7 +63,7 @@
 }
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Categories</h6>
+        <h6 class="m-0 font-weight-bold text-primary text-center">Categories</h6>
         <a asp-action="Create" class="btn btn-outline-success">Create</a>
     </div>
     <div class="card-body">
@@ -83,7 +83,14 @@
                         <tr>
                             <td>@item.Id</td>
                             <td>@item.Name</td>
-                            <td>@item.ParentCategory</td>
+                                @if (item.ParentCategory == null)
+                                {
+                                <td>null</td>
+                                    
+                                }
+                                else{
+                                <td>@item.ParentCategory</td>
+                                }
                             <td>@item.IsDeleted</td>
                             <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>
                             <td><a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> </td>

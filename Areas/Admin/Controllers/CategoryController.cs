@@ -44,7 +44,11 @@ namespace WebApplication1.Areas.Admin.Controllers
                 ModelState.AddModelError("Name", vm.Name + " already exist");
                 return View(vm);
             }
-            await _db.Categories.AddAsync(new Models.Category { Name = vm.Name, ParentCategory = vm.Id });
+            await _db.Categories.AddAsync(new Models.Category 
+            { 
+                Name = vm.Name, 
+                ParentCategory = vm.ParentCategory  
+            });
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -64,6 +68,7 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null || id <= 0) return BadRequest();
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
+            ViewBag.Categories = _db.Categories;
             return View(new CategoryUpdateVM
             {
                 Name = data.Name,
@@ -81,6 +86,7 @@ namespace WebApplication1.Areas.Admin.Controllers
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
             data.Name = vm.Name;
+            data.ParentCategory = (int?)vm.ParentCategory;
             await _db.SaveChangesAsync();
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));

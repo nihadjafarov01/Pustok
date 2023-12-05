@@ -4,10 +4,10 @@
     ViewData["Title"] = "Slider";
 }
 @section scripts{
-    @if (TempData["DeleteResponse"] != null)
+    @if (TempData["SliderDeleteResponse"] != null)
     {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        @if ((bool)TempData["DeleteResponse"] == true)
+        @if ((bool)TempData["SliderDeleteResponse"] == true)
         {
         <script>
             Swal.fire({
@@ -31,10 +31,10 @@
             </script>        
         }
     }
-    @if (TempData["UpdateResponse"] != null)
+    @if (TempData["SliderUpdateResponse"] != null)
     {
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        @if ((bool)TempData["UpdateResponse"] == true)
+        @if ((bool)TempData["SliderUpdateResponse"] == true)
         {
             <script>
                 Swal.fire({
@@ -62,7 +62,7 @@
 }
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Sliders</h6>
+        <h6 class="m-0 font-weight-bold text-primary text-center">Sliders</h6>
         <a asp-action="Create" class="btn btn-outline-success">Create</a>
     </div>
     <div class="card-body">

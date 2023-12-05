@@ -6,7 +6,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Categories</h6>
+        <h6 class="m-0 font-weight-bold text-primary text-center">Product images</h6>
         <a asp-action="Create" class="btn btn-outline-success">Create</a>
     </div>
     <div class="card-body">
@@ -14,9 +14,9 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <th>Id</th>
-                <th>Name</th>
-                <th>Parent category</th>
-                <th>Is deleted</th>
+                <th>Image path</th>
+                <th>Product id</th>
+                <th>Is active</th>
                 <th colspan="2">Action</th>
                 </thead>
                 <tbody>
@@ -26,11 +26,11 @@
                         {
                             <tr>
                                 <td>@item.Id</td>
-@*                                 <td>@item.Name</td>
-                                <td>@item.ParentCategory</td>
-                                <td>@item.IsDeleted</td>
+                                <td>@item.ImagePath</td>
+                                <td>@item.ProductId</td>
+                                <td>@item.IsActive</td>
                                 <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>
-                                <td><a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> </td> *@
+                                <td><a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> </td>
                             </tr>
                         }
                     }

@@ -50,7 +50,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 ViewBag.Categories = _db.Categories;
                 return View(vm);
             }
-            if (await _db.Products.AnyAsync(x => x.Id == vm.CategoryId))
+            if (await _db.Categories.AnyAsync(x => x.Id != vm.CategoryId))
             {
                 ModelState.AddModelError("CategoryId", "Category doesn't exist");
                 ViewBag.Categories = _db.Categories;
@@ -74,13 +74,13 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Delete(int? id)
         {
-            TempData["DeleteResponse"] = false;
+            TempData["ProductDeleteResponse"] = false;
             if (id == null) return BadRequest();
             var data = await _db.Products.FindAsync(id);
             if (data == null) return NotFound();
             _db.Products.Remove(data);
             await _db.SaveChangesAsync();
-            TempData["DeleteResponse"] = true;
+            TempData["ProductDeleteResponse"] = true;
             return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> Update(int? id)
@@ -111,7 +111,7 @@ namespace WebApplication1.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(int? id, ProductUpdateVM vm)
         {
-            TempData["UpdateResponse"] = false;
+            TempData["ProductUpdateResponse"] = false;
             if (id == null || id <= 0) return BadRequest();
             if (!ModelState.IsValid)
             {
@@ -132,9 +132,9 @@ namespace WebApplication1.Areas.Admin.Controllers
             data.Discount = vm.Discount;
             data.Quantity = vm.Quantity;
             //data.ImageUrl = vm.ImageUrl;
-            data.CategoryId = vm.CategoryId;
+            data.CategoryId = vm.CategoryId;    
             await _db.SaveChangesAsync();
-            TempData["UpdateResponse"] = true;
+            TempData["ProductUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
         }
     }

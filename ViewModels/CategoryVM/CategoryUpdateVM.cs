@@ -6,5 +6,6 @@ namespace WebApplication1.ViewModels.CategoryVM
     {
         [MaxLength(16)]
         public string Name { get; set; }
+        public int? ParentCategory { get; set; }
     }
 }

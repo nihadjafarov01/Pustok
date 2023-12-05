@@ -63,13 +63,13 @@ namespace WebApplication1.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            TempData["DeleteResponse"] = false;
+            TempData["SliderDeleteResponse"] = false;
             if (id == null) return BadRequest();
             var data = await _db.Sliders.FindAsync(id);
             if (data == null) return NotFound();
             _db.Sliders.Remove(data);
             await _db.SaveChangesAsync();
-            TempData["DeleteResponse"] = true;
+            TempData["SliderDeleteResponse"] = true;
             return RedirectToAction(nameof(Index));
         }
 
@@ -94,7 +94,7 @@ namespace WebApplication1.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(int? id, SliderUpdateVM vm)
         {
-            TempData["UpdateResponse"] = false;
+            TempData["SliderUpdateResponse"] = false;
             if (id == null || id <= 0) return BadRequest();
             if (vm.Position < -1 || vm.Position > 1)
             {
@@ -116,7 +116,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 1 => false
             };
             await _db.SaveChangesAsync();
-            TempData["UpdateResponse"] = true;
+            TempData["SliderUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
         }
     }

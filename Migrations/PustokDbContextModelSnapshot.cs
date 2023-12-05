@@ -38,7 +38,7 @@ namespace WebApplication1.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("ParentCategory")
+                    b.Property<int?>("ParentCategory")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
