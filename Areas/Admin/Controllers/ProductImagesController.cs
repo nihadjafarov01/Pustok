@@ -36,8 +36,15 @@ namespace WebApplication1.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductImagesCreateVM vm)
         {
+            if (vm.ProductId == 0)
+            {
+                ModelState.AddModelError("ProductId", "Product must be selected!");
+                ViewBag.Products = _db.Products;
+                return View(vm);
+            }
             if (!ModelState.IsValid)
             {
+                ViewBag.Products = _db.Products;
                 return View(vm);
             }
             await _db.ProductImages.AddAsync(new Models.ProductImages 

@@ -50,7 +50,13 @@ namespace WebApplication1.Areas.Admin.Controllers
                 ViewBag.Categories = _db.Categories;
                 return View(vm);
             }
-            if (await _db.Categories.AnyAsync(x => x.Id != vm.CategoryId))
+            if (vm.CategoryId == 0)
+            {
+                ModelState.AddModelError("CategoryId", "Category must be selected");
+                ViewBag.Categories = _db.Categories;
+                return View(vm);
+            }
+            if (!await _db.Categories.AnyAsync(x => x.Id == vm.CategoryId))
             {
                 ModelState.AddModelError("CategoryId", "Category doesn't exist");
                 ViewBag.Categories = _db.Categories;
@@ -104,8 +110,8 @@ namespace WebApplication1.Areas.Admin.Controllers
                 CostPrice = data.CostPrice,
                 Discount = data.Discount,
                 Quantity = data.Quantity,
-                //ImageUrl = data.ImageUrl,
-                CategoryId = data.CategoryId
+                CategoryId = data.CategoryId,
+                IsDeleted = data.IsDeleted,
             });
         }
         [HttpPost]
@@ -131,8 +137,8 @@ namespace WebApplication1.Areas.Admin.Controllers
             data.CostPrice = vm.CostPrice;
             data.Discount = vm.Discount;
             data.Quantity = vm.Quantity;
-            //data.ImageUrl = vm.ImageUrl;
-            data.CategoryId = vm.CategoryId;    
+            data.CategoryId = vm.CategoryId;
+            data.IsDeleted = vm.IsDeleted;
             await _db.SaveChangesAsync();
             TempData["ProductUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));

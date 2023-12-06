@@ -20,11 +20,27 @@
             <div class="form-group">
                 <label asp-for="ParentCategory">ParentCategory</label>
                 <select class="form-control" asp-for="ParentCategory" asp-items='@new SelectList(ViewBag.Categories,"Id","Name")'>
-                    <option disabled selected>Select parent category</option>
+                    <option value="" selected>Select parent category</option>
                 </select>
                 <span asp-validation-for="ParentCategory" class="text-danger"></span>
-            </div>                
+                </div>
             }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="ParentCategory">ParentCategory</label>
+                    <select class="form-control" asp-for="ParentCategory" asp-items='@new SelectList(ViewBag.Categories,"Id","Name")'>
+                        <option value="">Select parent category</option>
+                    </select>
+                    <span asp-validation-for="ParentCategory" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-check">
+                <input asp-for="IsDeleted" class="form-check-input">
+                <label asp-for="IsDeleted" class="form-check-label">IsDeleted</label>
+                <span asp-validation-for="IsDeleted" class="text-danger"></span>
+            </div>
+            <br>
             <button class="btn btn-success">Submit</button>
             <button asp-action="Index" class="btn btn-cancel">Cancel</button>
         </form>

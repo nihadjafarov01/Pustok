@@ -23,6 +23,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 Id = s.Id,
                 Name = s.Name,
                 ParentCategory = s.ParentCategory,
+                IsDeleted = s.IsDeleted,
             }).ToListAsync();
             ViewBag.Categories = _db.Categories;
             return View(items);
@@ -37,11 +38,13 @@ namespace WebApplication1.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Categories = _db.Categories;
                 return View(vm);
             }
             if (await _db.Categories.AnyAsync(x => x.Name == vm.Name))
             {
                 ModelState.AddModelError("Name", vm.Name + " already exist");
+                ViewBag.Categories = _db.Categories;
                 return View(vm);
             }
             await _db.Categories.AddAsync(new Models.Category 
@@ -68,10 +71,12 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null || id <= 0) return BadRequest();
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
-            ViewBag.Categories = _db.Categories;
+            ViewBag.Categories = _db.Categories.Where(o => id != o.Id && id != o.ParentCategory);
             return View(new CategoryUpdateVM
             {
                 Name = data.Name,
+                ParentCategory = data.ParentCategory,
+                IsDeleted = data.IsDeleted,
             });
         }
         [HttpPost]
@@ -81,12 +86,14 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null || id <= 0) return BadRequest();
             if (!ModelState.IsValid)
             {
+                ViewBag.Categories = _db.Categories.Where(o => id != o.Id && id != o.ParentCategory);
                 return View(vm);
             }
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
             data.Name = vm.Name;
             data.ParentCategory = (int?)vm.ParentCategory;
+            data.IsDeleted = vm.IsDeleted;
             await _db.SaveChangesAsync();
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));

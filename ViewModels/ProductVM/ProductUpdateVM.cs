@@ -18,5 +18,7 @@ namespace WebApplication1.ViewModels.ProductVM
         public float Discount { get; set; }
         public ushort Quantity { get; set; }
         public int CategoryId { get; set; }
+        public bool IsDeleted { get; set; }
+
     }
 }
