@@ -20,6 +20,7 @@ namespace WebApplication1.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.ProductImages = _db.ProductImages;
             return View(_db.Products.Select(p => new AdminProductListItemVM
             {
                 Id = p.Id,
@@ -30,7 +31,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 //ImageUrl = p.ImageUrl,
                 IsDeleted = p.IsDeleted,
                 Quantity = p.Quantity,
-                SellPrice = p.SellPrice
+                SellPrice = p.SellPrice,
             }));
         }
         public IActionResult Create()
@@ -72,7 +73,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 //ImageUrl = vm.ImageUrl,
                 CostPrice = vm.CostPrice,
                 SellPrice = vm.SellPrice,
-                CategoryId = vm.CategoryId
+                CategoryId = vm.CategoryId,
             };
             await _db.Products.AddAsync(prod);
             await _db.SaveChangesAsync();
@@ -84,7 +85,8 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null) return BadRequest();
             var data = await _db.Products.FindAsync(id);
             if (data == null) return NotFound();
-            _db.Products.Remove(data);
+            data.IsDeleted = true;
+            _db.Products.Update(data);
             await _db.SaveChangesAsync();
             TempData["ProductDeleteResponse"] = true;
             return RedirectToAction(nameof(Index));

@@ -80,5 +80,16 @@ namespace WebApplication1.Areas.Admin.Controllers
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            TempData["DeleteResponse"] = false;
+            if (id == null) return BadRequest();
+            var data = await _db.Authors.FindAsync(id);
+            if (data == null) return NotFound();
+            _db.Authors.Remove(data);
+            await _db.SaveChangesAsync();
+            TempData["DeleteResponse"] = true;
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

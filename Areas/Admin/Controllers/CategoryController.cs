@@ -61,7 +61,8 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null) return BadRequest();
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
-            _db.Categories.Remove(data);
+            data.IsDeleted = true;
+            _db.Categories.Update(data);
             await _db.SaveChangesAsync();
             TempData["DeleteResponse"] = true;
             return RedirectToAction(nameof(Index));

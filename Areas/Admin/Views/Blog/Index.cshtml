@@ -24,7 +24,7 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr class='@(item.IsDeleted ? "bg-danger" : "")'>
                             <td>@item.Id</td>
                             <td>@item.Title</td>
                             <td>@item.CreatedAt</td>

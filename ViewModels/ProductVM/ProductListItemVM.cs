@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using WebApplication1.Models;
 
 namespace WebApplication1.ViewModels.ProductVM
 {
@@ -12,5 +13,6 @@ namespace WebApplication1.ViewModels.ProductVM
         public ushort Quantity { get; set; }
         public int CategoryId { get; set; }
         public bool IsDeleted { get; set; } 
+        public List<ProductImages>? ProductImages { get; set; }
     }
 }

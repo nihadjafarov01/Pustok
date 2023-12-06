@@ -18,6 +18,7 @@ namespace WebApplication1.Areas.Admin.ViewModels
         public ushort Quantity { get; set; }
         public string ImageUrl { get; set; }
         public Category? Category { get; set; }
+        public List<ProductImages>? ProductImages { get; set; }
         public bool IsDeleted { get; set; }
     }
 }
