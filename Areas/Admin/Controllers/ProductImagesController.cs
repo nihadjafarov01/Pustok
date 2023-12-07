@@ -90,9 +90,9 @@ namespace WebApplication1.Areas.Admin.Controllers
             ViewBag.Products = _db.Products;
             return View(new ProductImagesUpdateVM
             {
-                ImagePath = data.ImagePath ,
                 ProductId= data.ProductId,
-                IsActive = data.IsActive
+                IsActive = data.IsActive,
+                ImagePath = data.ImagePath,
             });
         }
         [HttpPost]
@@ -110,9 +110,23 @@ namespace WebApplication1.Areas.Admin.Controllers
             {
                 return View(vm);
             }
-            data.ImagePath = vm.ImagePath;
+            if (vm.ImageFile != null)
+            {
+            string fileName = Path.Combine("image", "products", vm.ImageFile.FileName);
+            using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, fileName)))
+            {
+                await vm.ImageFile.CopyToAsync(fs);
+            }
+            data.ImagePath = fileName;
             data.ProductId = vm.ProductId;
             data.IsActive = vm.IsActive;
+            }
+            else
+            {
+                data.ProductId = vm.ProductId;
+                data.IsActive = vm.IsActive;
+            
+            }
             await _db.SaveChangesAsync();
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));

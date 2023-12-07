@@ -15,6 +15,7 @@
                 <thead>
                 <th>Id</th>
                 <th>Image path</th>
+                <th>Image</th>
                 <th>Product id</th>
                 <th>Is active</th>
                 <th colspan="2">Action</th>
@@ -24,9 +25,19 @@
                     {
                         @foreach (var item in Model)
                         {
-                            <tr class='@(item.IsActive ? "" : "bg-danger")'>
+                            <tr class='@(item.IsActive ? "" : "bg-danger" )'>
                                 <td>@item.Id</td>
                                 <td>@item.ImagePath</td>
+                                <td>
+                                    @if (item.ImagePath.Contains("://"))
+                                    {
+                                        <img height="60" src="@item.ImagePath" />
+                                    }
+                                    else
+                                    {
+                                        <img height="60" src="~/@item.ImagePath" />
+                                    }
+                                </td>
                                 <td>@item.ProductId</td>
                                 <td>@item.IsActive</td>
                                 <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>

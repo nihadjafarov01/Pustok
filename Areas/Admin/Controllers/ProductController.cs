@@ -32,6 +32,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 IsDeleted = p.IsDeleted,
                 Quantity = p.Quantity,
                 SellPrice = p.SellPrice,
+                //ProductImages = p.ProductImages.Select(c => c.Product)
             }));
         }
         public IActionResult Create()
