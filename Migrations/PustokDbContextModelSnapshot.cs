@@ -82,6 +82,25 @@ namespace WebApplication1.Migrations
                     b.ToTable("Blogs");
                 });
 
+            modelBuilder.Entity("WebApplication1.Models.BlogTags", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BlogId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlogTags");
+                });
+
             modelBuilder.Entity("WebApplication1.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -206,6 +225,23 @@ namespace WebApplication1.Migrations
                     b.ToTable("Sliders");
                 });
 
+            modelBuilder.Entity("WebApplication1.Models.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("WebApplication1.Models.Blog", b =>
                 {
                     b.HasOne("WebApplication1.Models.Author", "Author")
@@ -231,7 +267,7 @@ namespace WebApplication1.Migrations
             modelBuilder.Entity("WebApplication1.Models.ProductImages", b =>
                 {
                     b.HasOne("WebApplication1.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Images")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -247,6 +283,11 @@ namespace WebApplication1.Migrations
             modelBuilder.Entity("WebApplication1.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Product", b =>
+                {
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,6 +12,8 @@ namespace WebApplication1.Contexts
         public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Author> Authors { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<BlogTags> BlogTags { get; set; }
 
     }
 }
