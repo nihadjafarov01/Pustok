@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Contexts;
 using WebApplication1.ViewModels.AuthorVM;
+using WebApplication1.ViewModels.BlogTagsVM;
 using WebApplication1.ViewModels.BlogVM;
 using WebApplication1.ViewModels.CategoryVM;
 
@@ -27,6 +29,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 CreatedAt = s.CreatedAt,
                 UpdatedAt = s.UpdatedAt,
                 IsDeleted = s.IsDeleted,
+                Tags = s.BlogTags.Select(t =>  t.Tag)
             }).ToListAsync();
             return View(items);
         }
@@ -34,6 +37,7 @@ namespace WebApplication1.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewBag.Authors = _db.Authors;
+            ViewBag.Tags = new SelectList(_db.Tags,"Id","Title");
             return View();
         }
         [HttpPost]
@@ -43,11 +47,13 @@ namespace WebApplication1.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("AuthorId", "Authors must be selected");
                 ViewBag.Authors = _db.Authors;
+                ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
                 return View(vm);
             }
             if (!ModelState.IsValid)
             {
                 ViewBag.Authors = _db.Authors;
+                ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
                 return View(vm);
             }
             await _db.Blogs.AddAsync(new Models.Blog
@@ -55,6 +61,11 @@ namespace WebApplication1.Areas.Admin.Controllers
                 Title = vm.Title,
                 Description = vm.Description,
                 AuthorId = vm.AuthorId,
+                BlogTags = vm.TagIds.Select(id => new Models.BlogTags
+                {
+                    TagId = id,
+
+                }).ToList()
             });
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

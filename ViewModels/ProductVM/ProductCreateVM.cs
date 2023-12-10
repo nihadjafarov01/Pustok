@@ -8,7 +8,8 @@ namespace WebApplication1.ViewModels.ProductVM
     {
         [MaxLength(64)]
         public string Name { get; set; }
-        [MaxLength(128)]
+        public IFormFile ImageFile { get; set; }
+        public IFormFile? HoverImageFile { get; set; }
         public string? About { get; set; }
         public string? Description { get; set; }
         [Column(TypeName = "smallmoney")]

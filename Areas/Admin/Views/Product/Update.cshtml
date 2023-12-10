@@ -9,21 +9,11 @@
         <h6 class="m-0 font-weight-bold text-primary">Update Product</h6>
     </div>
     <div class="card-body">
-        <form asp-action="Update" method="post">
+        <form asp-action="Update" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control">
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="About"></label>
-                <input asp-for="About" class="form-control">
-                <span asp-validation-for="About" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description"></label>
-                <input asp-for="Description" class="form-control">
-                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SellPrice"></label>
@@ -46,17 +36,41 @@
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="About"></label>
+                <textarea asp-for="About" class="form-control"></textarea>
+                <span asp-validation-for="About" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <td>
+                <img height="60" src="~/@Model.ImagePath" />
+            </td>
+            <div class="form-group">
+                <label asp-for="ImageFile"></label>
+                <input asp-for="ImageFile" class="form-control" multiple accept="image/*">
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            @if (Model.HoverImagePath != null)
+            {
+                <td>
+                    <img height="60" src="~/@Model.HoverImagePath" />
+                </td>
+            }
+            <div class="form-group">
+                <label asp-for="HoverImageFile"></label>
+                <input asp-for="HoverImageFile" class="form-control" multiple accept="image/*">
+                <span asp-validation-for="HoverImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="CategoryId">Categories</label>
                 <select class="form-control" asp-for="CategoryId" asp-items='@new SelectList(ViewBag.Categories,"Id","Name")'>
+                    <option disabled selected>Select category</option>
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-            <div class="form-check">
-                <input asp-for="IsDeleted" class="form-check-input">
-                <label asp-for="IsDeleted" class="form-check-label">IsDeleted</label>
-                <span asp-validation-for="IsDeleted" class="text-danger"></span>
-            </div>
-            <br>
             <button class="btn btn-success">Submit</button>
             <button asp-action="Index" class="btn btn-cancel">Cancel</button>
         </form>

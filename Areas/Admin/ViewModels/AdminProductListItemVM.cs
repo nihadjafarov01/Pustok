@@ -17,8 +17,9 @@ namespace WebApplication1.Areas.Admin.ViewModels
         public float Discount { get; set; }
         public ushort Quantity { get; set; }
         public string ImageUrl { get; set; }
+        public string? HoverImageUrl { get; set; }
         public Category? Category { get; set; }
-        public List<ProductImages>? ProductImages { get; set; }
+        public ICollection<ProductImages>? Images { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

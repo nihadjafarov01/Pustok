@@ -12,15 +12,17 @@ namespace WebApplication1.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         PustokDbContext _db { get; }
+        IWebHostEnvironment _env { get; }
 
-        public ProductController(PustokDbContext db)
+        public ProductController(PustokDbContext db, IWebHostEnvironment env)
         {
             _db = db;
+            _env = env;
         }
 
         public IActionResult Index()
         {
-            ViewBag.ProductImages = _db.ProductImages;
+            //ViewBag.ProductImages = _db.ProductImages;
             return View(_db.Products.Select(p => new AdminProductListItemVM
             {
                 Id = p.Id,
@@ -28,11 +30,13 @@ namespace WebApplication1.Areas.Admin.Controllers
                 CostPrice = p.CostPrice,
                 Discount = p.Discount,
                 Category = p.Category,
-                //ImageUrl = p.ImageUrl,
+                ImageUrl = p.ImageUrl,
+                HoverImageUrl = p.HoverImageUrl,
                 IsDeleted = p.IsDeleted,
                 Quantity = p.Quantity,
                 SellPrice = p.SellPrice,
-                //ProductImages = p.ProductImages.Select(c => c.Product)
+                Images = p.Images
+                //Images = (IEnumerable<ProductImages?>)p.Images.Select(c => c.ImagePath)
             }));
         }
         public IActionResult Create()
@@ -64,6 +68,21 @@ namespace WebApplication1.Areas.Admin.Controllers
                 ViewBag.Categories = _db.Categories;
                 return View(vm);
             }
+            string fileName = Path.Combine("image", "products", vm.ImageFile.FileName);
+            using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, fileName)))
+            {
+                await vm.ImageFile.CopyToAsync(fs);
+            }
+            string? hoverFileName = null;
+            if (vm.HoverImageFile != null)
+            {
+                hoverFileName = Path.Combine("image", "products", vm.HoverImageFile.FileName);
+                using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, hoverFileName)))
+                {
+                    await vm.HoverImageFile.CopyToAsync(fs);
+                }
+            }
+
             Product prod = new Product
             {
                 Name = vm.Name,
@@ -71,7 +90,8 @@ namespace WebApplication1.Areas.Admin.Controllers
                 Quantity = vm.Quantity,
                 Description = vm.Description,
                 Discount = vm.Discount,
-                //ImageUrl = vm.ImageUrl,
+                ImageUrl = fileName,
+                HoverImageUrl = hoverFileName,
                 CostPrice = vm.CostPrice,
                 SellPrice = vm.SellPrice,
                 CategoryId = vm.CategoryId,
@@ -109,6 +129,8 @@ namespace WebApplication1.Areas.Admin.Controllers
                 Name = data.Name,
                 About = data.About,
                 Description = data.Description,
+                ImagePath = data.ImageUrl,
+                HoverImagePath = data.HoverImageUrl,
                 SellPrice = data.SellPrice,
                 CostPrice = data.CostPrice,
                 Discount = data.Discount,
@@ -142,7 +164,25 @@ namespace WebApplication1.Areas.Admin.Controllers
             data.Quantity = vm.Quantity;
             data.CategoryId = vm.CategoryId;
             data.IsDeleted = vm.IsDeleted;
-            await _db.SaveChangesAsync();
+            if (vm.ImageFile != null)
+            {
+                string fileName = Path.Combine("image", "products", vm.ImageFile.FileName);
+                using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, fileName)))
+                {
+                    await vm.ImageFile.CopyToAsync(fs);
+                }
+                data.ImageUrl = fileName;
+            }
+            if (vm.HoverImageFile != null)
+            {
+                string hoverFileName = Path.Combine("image", "products", vm.ImageFile.FileName);
+                using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, hoverFileName)))
+                {
+                    await vm.ImageFile.CopyToAsync(fs);
+                }
+                data.HoverImageUrl = hoverFileName;
+            }
+                await _db.SaveChangesAsync();
             TempData["ProductUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
         }

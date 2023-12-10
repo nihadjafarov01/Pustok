@@ -80,6 +80,9 @@
                 <th>Discount</th>
                 <th>Quantity</th>
                 <th>Category</th>
+                <th>ImageUrl</th>
+                <th>HoverImageUrl</th>
+                <th>Images</th>
                 <th>IsDeleted</th>
                 <th colspan="2">Action</th>
                 </thead>
@@ -94,6 +97,14 @@
                             <td>@item.Discount</td>
                             <td>@item.Quantity</td>
                             <td>@item.Category?.Name</td>
+                            <td>
+                                <img src="~/@item.ImageUrl" height="60"/>
+                            </td>
+                            <td>
+                                <img src="~/@item.HoverImageUrl" height="60" />
+                            </td>
+@*                             <td>@item.Images</td>
+ *@ *@@*                             <td>@string.Join("", item.Images.Select(x => x.ImagePath))</td>
                             <td>@item.IsDeleted</td>
                             
                             <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>

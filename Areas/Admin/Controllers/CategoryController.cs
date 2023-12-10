@@ -72,7 +72,7 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null || id <= 0) return BadRequest();
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
-            ViewBag.Categories = _db.Categories.Where(o => id != o.Id && id != o.ParentCategory);
+            ViewBag.Categories = _db.Categories.Where(o => id != o.Id);
             return View(new CategoryUpdateVM
             {
                 Name = data.Name,

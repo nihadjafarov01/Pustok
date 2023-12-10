@@ -9,6 +9,8 @@ namespace WebApplication1.Models
         [MaxLength(64)]
         public string Name { get; set; }
         [MaxLength(128)]
+        public string ImageUrl { get; set; }
+        public string? HoverImageUrl { get; set; }
         public string? About { get; set; }
         public string? Description { get; set; }
         [Column(TypeName = "smallmoney")]
@@ -21,7 +23,6 @@ namespace WebApplication1.Models
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public List<ProductImages>? Images { get; set; }
-
+        public ICollection<ProductImages>? Images { get; set; }
     }
 }

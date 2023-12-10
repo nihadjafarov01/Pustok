@@ -98,6 +98,10 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BlogId");
+
+                    b.HasIndex("TagId");
+
                     b.ToTable("BlogTags");
                 });
 
@@ -134,8 +138,7 @@ namespace WebApplication1.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("About")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -148,6 +151,14 @@ namespace WebApplication1.Migrations
 
                     b.Property<float>("Discount")
                         .HasColumnType("real");
+
+                    b.Property<string>("HoverImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -253,6 +264,25 @@ namespace WebApplication1.Migrations
                     b.Navigation("Author");
                 });
 
+            modelBuilder.Entity("WebApplication1.Models.BlogTags", b =>
+                {
+                    b.HasOne("WebApplication1.Models.Blog", "Blog")
+                        .WithMany("BlogTags")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApplication1.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("WebApplication1.Models.Product", b =>
                 {
                     b.HasOne("WebApplication1.Models.Category", "Category")
@@ -278,6 +308,11 @@ namespace WebApplication1.Migrations
             modelBuilder.Entity("WebApplication1.Models.Author", b =>
                 {
                     b.Navigation("Blogs");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Blog", b =>
+                {
+                    b.Navigation("BlogTags");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Category", b =>

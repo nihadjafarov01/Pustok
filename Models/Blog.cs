@@ -14,5 +14,6 @@ namespace WebApplication1.Models
         public int AuthorId { get; set; }
         public Author Author { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public IEnumerable<BlogTags?> BlogTags { get; set; }
     }
 }
