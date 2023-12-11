@@ -42,6 +42,7 @@ namespace WebApplication1.Controllers
             ViewBag.Categories = _context.Categories;
             return View(new ProductDetailVM
             {
+                Id = data.Id,
                 Name = data.Name,
                 About = data.About,
                 Description = data.Description,

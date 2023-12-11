@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Contexts;
+using WebApplication1.Helpers;
 
 namespace WebApplication1
 {
@@ -36,6 +37,8 @@ namespace WebApplication1
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            PathConstants.RootPath = builder.Environment.WebRootPath;
 
             app.Run();
         }

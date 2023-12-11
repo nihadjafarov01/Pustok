@@ -103,8 +103,14 @@
                             <td>
                                 <img src="~/@item.HoverImageUrl" height="60" />
                             </td>
-@*                             <td>@item.Images</td>
- *@ *@@*                             <td>@string.Join("", item.Images.Select(x => x.ImagePath))</td>
+                             <td>
+                                @foreach(var i in item.Images)
+                                {
+                                    <img src="~/@i.ImagePath" height="60" />
+                                }
+@*                                  @string.Join("", item.Images.Select(x => x.ImagePath))
+ *@                                 
+                             </td>
                             <td>@item.IsDeleted</td>
                             
                             <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>

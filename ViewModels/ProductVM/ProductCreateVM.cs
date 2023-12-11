@@ -10,6 +10,7 @@ namespace WebApplication1.ViewModels.ProductVM
         public string Name { get; set; }
         public IFormFile ImageFile { get; set; }
         public IFormFile? HoverImageFile { get; set; }
+        public List<IFormFile>? Images { get; set; }
         public string? About { get; set; }
         public string? Description { get; set; }
         [Column(TypeName = "smallmoney")]

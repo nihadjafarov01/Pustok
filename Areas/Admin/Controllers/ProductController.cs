@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using System.Collections.ObjectModel;
 using WebApplication1.Areas.Admin.ViewModels;
 using WebApplication1.Contexts;
 using WebApplication1.Models;
@@ -82,7 +84,6 @@ namespace WebApplication1.Areas.Admin.Controllers
                     await vm.HoverImageFile.CopyToAsync(fs);
                 }
             }
-
             Product prod = new Product
             {
                 Name = vm.Name,
@@ -95,7 +96,22 @@ namespace WebApplication1.Areas.Admin.Controllers
                 CostPrice = vm.CostPrice,
                 SellPrice = vm.SellPrice,
                 CategoryId = vm.CategoryId,
+                Images = vm.Images
             };
+
+            //foreach (var item in vm.Images)
+            //{
+            //    fileNames = Path.Combine("image", "products", item.FileName);
+            //    using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, fileNames)))
+            //    {
+            //        await item.CopyToAsync(fs);
+            //    }
+            //    await _db.ProductImages.AddAsync(new ProductImages
+            //    {
+            //        ImagePath = fileNames,
+            //        ProductId = prod.Id,
+            //    });
+            //}
             await _db.Products.AddAsync(prod);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -175,10 +191,10 @@ namespace WebApplication1.Areas.Admin.Controllers
             }
             if (vm.HoverImageFile != null)
             {
-                string hoverFileName = Path.Combine("image", "products", vm.ImageFile.FileName);
+                string hoverFileName = Path.Combine("image", "products", vm.HoverImageFile.FileName);
                 using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, hoverFileName)))
                 {
-                    await vm.ImageFile.CopyToAsync(fs);
+                    await vm.HoverImageFile.CopyToAsync(fs);
                 }
                 data.HoverImageUrl = hoverFileName;
             }
