@@ -2,7 +2,7 @@
 {
     public static class FileExtension
     {
-        public static async Task<string> Save(this IFormFile file, string path)
+        public static async Task<string> SaveAsync(this IFormFile file, string path)
         {
             string extension = Path.GetExtension(file.FileName);
             string fileName = Path.GetFileNameWithoutExtension(file.FileName).Length > 32?

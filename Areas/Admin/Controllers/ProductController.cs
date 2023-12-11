@@ -4,6 +4,7 @@ using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using WebApplication1.Areas.Admin.ViewModels;
 using WebApplication1.Contexts;
+using WebApplication1.Helpers;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.CategoryVM;
 using WebApplication1.ViewModels.ProductVM;
@@ -96,7 +97,10 @@ namespace WebApplication1.Areas.Admin.Controllers
                 CostPrice = vm.CostPrice,
                 SellPrice = vm.SellPrice,
                 CategoryId = vm.CategoryId,
-                Images = vm.Images
+                Images = vm.Images.Select(i => new ProductImages
+                {
+                    ImagePath = i.SaveAsync(PathConstants.Product).Result
+                }).ToList(),
             };
 
             //foreach (var item in vm.Images)

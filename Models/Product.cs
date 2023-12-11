@@ -23,6 +23,6 @@ namespace WebApplication1.Models
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public ICollection<ProductImages>? Images { get; set; }
+        public List<ProductImages>? Images { get; set; }
     }
 }

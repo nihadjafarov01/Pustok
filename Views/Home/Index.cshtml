@@ -1358,13 +1358,20 @@
                                 <div class="product-card--body">
                                     <div class="card-image">
                                         <img src="~/@item.ImageUrl" alt="">
+                                            <div class="hover-contents">
                                         @if (item.HoverImageUrl != null)
                                         {
-                                            <div class="hover-contents">
                                             <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
                                                     <img src="~/@item.HoverImageUrl" alt="">
                                                 </a>
-                                                <div class="hover-btns">
+                                        }
+                                            else
+                                            {
+                                                  <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
+                                                    <img src="~/@item.ImageUrl" alt="">
+                                                </a>
+                                            }
+                                            <div class="hover-btns">
                                                     <a href="cart.html" class="single-btn">
                                                         <i class="fas fa-shopping-basket"></i>
                                                     </a>
@@ -1380,7 +1387,7 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                        }
+                                        
                                     </div>
                                     <div class="price-block">
                                         <span class="price">@(item.SellPrice * (decimal)item.Discount / 100)</span>

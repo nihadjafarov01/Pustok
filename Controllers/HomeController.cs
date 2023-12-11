@@ -39,6 +39,7 @@ namespace WebApplication1.Controllers
             }
             ViewBag.Sliders = _context.Sliders;
             ViewBag.Products = _context.Products;
+            ViewBag.ProductImages = _context.ProductImages.Where(p => p.ProductId == id);
             ViewBag.Categories = _context.Categories;
             return View(new ProductDetailVM
             {
@@ -54,7 +55,7 @@ namespace WebApplication1.Controllers
                 Quantity = data.Quantity,
                 CategoryId = data.CategoryId,
                 IsDeleted = data.IsDeleted,
-                ProductImages = data.Images
+                ImageUrls = ViewBag.ProductImages
             });
         }
     }
