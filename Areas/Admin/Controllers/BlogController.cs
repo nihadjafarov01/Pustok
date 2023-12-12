@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 using WebApplication1.Contexts;
+using WebApplication1.Models;
 using WebApplication1.ViewModels.AuthorVM;
 using WebApplication1.ViewModels.BlogTagsVM;
 using WebApplication1.ViewModels.BlogVM;
@@ -74,16 +76,21 @@ namespace WebApplication1.Areas.Admin.Controllers
         public async Task<IActionResult> Update(int? id)
         {
             if (id == null || id <= 0) return BadRequest();
-            var data = await _db.Blogs.FindAsync(id);
+            var data = await _db.Blogs.Include(b => b.BlogTags).SingleOrDefaultAsync(b => b.Id == id);
             if (data == null) return NotFound();
             ViewBag.Authors = _db.Authors;
-            return View(new BlogUpdateVM
+            ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
+            //ViewBag.BlogTags = _db.BlogTags.Select(t => t.BlogId == id);
+            var returnData = new BlogUpdateVM
             {
                 Title = data.Title,
                 Description = data.Description,
-                AuthorId= data.AuthorId,
+                AuthorId = data.AuthorId,
                 IsDeleted = data.IsDeleted,
-            });
+                TagIds = data.BlogTags.Select(t => t.TagId)
+
+            };
+            return View(returnData);
         }
         [HttpPost]
         public async Task<IActionResult> Update(int? id, BlogUpdateVM vm)
@@ -107,6 +114,20 @@ namespace WebApplication1.Areas.Admin.Controllers
             data.Description = vm.Description;
             data.AuthorId = vm.AuthorId;
             data.IsDeleted = vm.IsDeleted;
+            foreach (var item in _db.BlogTags)
+            {
+                if (item.BlogId == id)
+                {
+                    _db.Remove(item);
+                }
+            }
+            List<BlogTags> bgs = new List<BlogTags>();
+            foreach (var item in vm.TagIds)
+            {
+                bgs.Add(new BlogTags { TagId = item });
+            };
+            data.BlogTags = bgs;
+            //_db.BlogTags.Remove()
             await _db.SaveChangesAsync();
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));

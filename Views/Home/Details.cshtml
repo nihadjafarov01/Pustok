@@ -36,9 +36,9 @@
                     <div class="single-slide">
                         <img src="~/@Model.ImageUrl" alt="">
                     </div>
-                    @if (Model.ImageUrls != null)
-                    {
-                        @foreach (ProductImages item in Model.ImageUrls)
+                      @if (Model.ImageUrls != null)
+                      {
+                        @foreach (var item in Model.ImageUrls)
                         {
                             <div class="single-slide">
                                 <img src="~/@item.ImagePath" alt="">

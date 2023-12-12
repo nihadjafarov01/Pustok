@@ -170,12 +170,14 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = _db.Categories;
+                ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
                 return View(vm);
             }
             var data = await _db.Products.FindAsync(id);
             if (data == null)
             {
                 ViewBag.Categories = _db.Categories;
+                ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
                 return NotFound();
             }
             data.Name = vm.Name;

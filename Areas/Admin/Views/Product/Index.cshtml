@@ -81,7 +81,7 @@
                 <th>Quantity</th>
                 <th>Category</th>
                 <th>ImageUrl</th>
-                <th>HoverImageUrl</th>
+                <th>HoverUrl</th>
                 <th>Images</th>
                 <th>IsDeleted</th>
                 <th colspan="2">Action</th>
@@ -98,19 +98,38 @@
                             <td>@item.Quantity</td>
                             <td>@item.Category?.Name</td>
                             <td>
-                                <img src="~/@item.ImageUrl" height="60"/>
+                                <img src="~/@item.ImageUrl" height="60" width="60"/>
                             </td>
                             <td>
-                                <img src="~/@item.HoverImageUrl" height="60" />
+                                @if (item.HoverImageUrl != null)
+                                {
+                                    <img src="~/@item.HoverImageUrl" height="60" width="60"/>
+                                }
+                                else
+                                {
+                                    <a>no hover</a>
+                                }
                             </td>
                              <td>
-                                @foreach(var i in item.Images)
+                                <div class="d-flex flex-row">
+                                 @foreach(var i in item.Images)
                                 {
+                                        <div class="p-2">
                                     <img src="~/@i.ImagePath" height="60" />
+@*                                   @string.Join("", item.Images.Select(x => x.ImagePath))
+ *@                                   
+                                    
+                                    </div>
+                                        @if(item.Images.Count > 1)
+                                        {
+                                            <div class="p-1">
+                                                + @(item.Images.Count - 1)
+                                            </div>
+                                        }
+                                    break;
                                 }
-@*                                  @string.Join("", item.Images.Select(x => x.ImagePath))
- *@                                 
-                             </td>
+                                </div>
+                            </td>
                             <td>@item.IsDeleted</td>
                             
                             <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>

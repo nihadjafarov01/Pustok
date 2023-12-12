@@ -32,7 +32,6 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest();
             }
-            var res = await _context.Products.ToListAsync();
             var res1 = await _context.Products.Include(p => p.Images).ToListAsync();
             var data = await _context.Products.FindAsync(id);
             if (data == null)
@@ -41,7 +40,6 @@ namespace WebApplication1.Controllers
             }
             ViewBag.Sliders = _context.Sliders;
             ViewBag.Products = _context.Products;
-            ViewBag.ProductImages = _context.ProductImages.Where(p => p.ProductId == id);
             ViewBag.Categories = _context.Categories;
             return View(new ProductDetailVM
             {
