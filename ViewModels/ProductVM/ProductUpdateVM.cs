@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using WebApplication1.Models;
 
 namespace WebApplication1.ViewModels.ProductVM
 {
@@ -12,6 +13,8 @@ namespace WebApplication1.ViewModels.ProductVM
         public IFormFile? ImageFile { get; set; }
         public string? HoverImagePath { get; set; }
         public IFormFile? HoverImageFile { get; set; }
+        public List<ProductImages>? ImageUrls { get; set; }
+        public List<IFormFile>? Images { get; set; }
         public string? About { get; set; }
         public string? Description { get; set; }
         [Column(TypeName = "smallmoney")]

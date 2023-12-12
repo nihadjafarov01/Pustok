@@ -26,6 +26,7 @@ namespace WebApplication1.Areas.Admin.Controllers
         public IActionResult Index()
         {
             //ViewBag.ProductImages = _db.ProductImages;
+
             return View(_db.Products.Select(p => new AdminProductListItemVM
             {
                 Id = p.Id,
@@ -36,7 +37,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 ImageUrl = p.ImageUrl,
                 HoverImageUrl = p.HoverImageUrl,
                 IsDeleted = p.IsDeleted,
-                Quantity = p.Quantity,
+                Quantity = p.Quantity,  
                 SellPrice = p.SellPrice,
                 Images = p.Images
                 //Images = (IEnumerable<ProductImages?>)p.Images.Select(c => c.ImagePath)
@@ -144,6 +145,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewBag.Categories = _db.Categories;
+            ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
             return View(new ProductUpdateVM
             {
                 Name = data.Name,
@@ -157,7 +159,8 @@ namespace WebApplication1.Areas.Admin.Controllers
                 Quantity = data.Quantity,
                 CategoryId = data.CategoryId,
                 IsDeleted = data.IsDeleted,
-            });
+                ImageUrls = _db.ProductImages.Where(pi => pi.ProductId == id).ToList(),
+        });
         }
         [HttpPost]
         public async Task<IActionResult> Update(int? id, ProductUpdateVM vm)

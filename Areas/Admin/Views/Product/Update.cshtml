@@ -45,24 +45,38 @@
                 <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="ImageFile"></label>
             <td>
                 <img height="60" src="~/@Model.ImagePath" />
             </td>
-            <div class="form-group">
-                <label asp-for="ImageFile"></label>
-                <input asp-for="ImageFile" class="form-control" multiple accept="image/*">
+                <input asp-for="ImageFile" class="form-control" accept="image/*">
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="HoverImageFile"></label>
             @if (Model.HoverImagePath != null)
             {
                 <td>
                     <img height="60" src="~/@Model.HoverImagePath" />
                 </td>
             }
-            <div class="form-group">
-                <label asp-for="HoverImageFile"></label>
-                <input asp-for="HoverImageFile" class="form-control" multiple accept="image/*">
+                <input asp-for="HoverImageFile" class="form-control" accept="image/*">
                 <span asp-validation-for="HoverImageFile" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Images"></label>
+@*             @if (Model.Images.Count > 0)
+            { *@
+                @foreach (var item in ViewBag.ProductImages)
+                {
+                    <td>
+                        <img height="120" src="~/@item.ImagePath" />
+                    </td>
+                }
+                <input asp-for="Images" class="form-control" multiple accept="image/*">
+                <span asp-validation-for="Images" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId">Categories</label>

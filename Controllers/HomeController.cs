@@ -32,6 +32,8 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest();
             }
+            var res = await _context.Products.ToListAsync();
+            var res1 = await _context.Products.Include(p => p.Images).ToListAsync();
             var data = await _context.Products.FindAsync(id);
             if (data == null)
             {
@@ -55,7 +57,7 @@ namespace WebApplication1.Controllers
                 Quantity = data.Quantity,
                 CategoryId = data.CategoryId,
                 IsDeleted = data.IsDeleted,
-                ImageUrls = ViewBag.ProductImages
+                ImageUrls = data.Images
             });
         }
     }

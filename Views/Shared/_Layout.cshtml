@@ -203,7 +203,7 @@
                                         {
                                             if (item.ParentCategory == null)
                                             {
-                                                @if (((IEnumerable<Category>)ViewBag.Categories).Count(c => c.ParentCategory == item.Id) > 0)
+@*                                                 @if (((IEnumerable<Category>)ViewBag.Categories).Count(c => c.ParentCategory == item.Id) > 0)
                                                  {
                                                 <li class="cat-item has-children">
                                                     <a href="#">@item.Name</a>
@@ -220,7 +220,7 @@
                                                     <li class="cat-item">
                                                         <a href="#">@item.Name</a>
                                                     </li>
-                                                }
+                                                } *@
                                             }
                                         }
                                     </ul>
