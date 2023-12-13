@@ -1,36 +1,9 @@
 ﻿@model PaginationVM<IEnumerable<ProductListItemVM>>
 
-<section class="section-padding">
-    <h2 class="sr-only">Home Tab Slider Section</h2>
-    <div class="container">
-        <div class="sb-custom-tab">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="shop-tab" data-toggle="tab" href="#shop" role="tab"
-                       aria-controls="shop" aria-selected="true">
-                        Featured Products
-                    </a>
-                    <span class="arrow-icon"></span>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane show active" id="shop" role="tabpanel" aria-labelledby="shop-tab">
-                    <div class="product-slider multiple-row  slider-border-multiple-row  sb-slick-slider"
-                         data-slick-setting='{
-                            "autoplay": true,
-                            "autoplaySpeed": 8000,
-                            "slidesToShow": 5,
-                            "rows":1,
-                            "dots":true
-                        }' data-slick-responsive='[
-                            {"breakpoint":1200, "settings": {"slidesToShow": 3} },
-                            {"breakpoint":768, "settings": {"slidesToShow": 2} },
-                            {"breakpoint":480, "settings": {"slidesToShow": 1} },
-                            {"breakpoint":320, "settings": {"slidesToShow": 1} }
-                        ]'>
+
+
                         @foreach (var item in Model.Items)
                         {
-                            <div class="single-slide">
                                 <div class="product-card">
                                     <div class="product-header">
                                         <a href="#" class="author">
@@ -84,8 +57,18 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         }
                     </div>
                 </div>
-</section>
+                <nav aria-label="Page navigation example">
+                    <ul id="prod-pag" class="pagination justify-content-center">
+                        <li class="page-item @(Model.HasPre ? "" : "disabled")"><a class="page-link" asp-action="ProductPagination" asp-route-page="@(Model.CurrentPage - 1)" asp-route-count="2">Previous</a></li>
+                        @for (int i = 1; i <= Model.LastPage; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")"><a class="page-link" asp-action="ProductPagination" asp-route-page="@i" asp-route-count="2">@i</a></li>
+                        }
+                        <li class="page-item @(Model.HasNext ? "" : "disabled")"><a class="page-link" asp-action="ProductPagination" asp-route-page="@(Model.CurrentPage + 1)" asp-route-count="2">Next</a></li>
+@*                         <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li> *@
+                    </ul>
+                </nav>

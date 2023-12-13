@@ -199,10 +199,10 @@
                                         categories
                                     </a>
                                     <ul class="category-menu">
-                                        @foreach(Category item in ViewBag.Categories)
+@*                                         @foreach(Category item in Model.Categories)
                                         {
                                             if (item.ParentCategory == null)
-                                            {
+                                            { *@
 @*                                                 @if (((IEnumerable<Category>)ViewBag.Categories).Count(c => c.ParentCategory == item.Id) > 0)
                                                  {
                                                 <li class="cat-item has-children">
@@ -906,6 +906,7 @@
         <script src="~/js/plugins.js"></script>
         <script src="~/js/ajax-mail.js"></script>
         <script src="~/js/custom.js"></script>
+        @await RenderSectionAsync("scripts", false)
 </body>
 
 

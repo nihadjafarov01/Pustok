@@ -1,12 +1,13 @@
-﻿using AspNetCore;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WebApplication1.Contexts;
 using WebApplication1.Models;
-using WebApplication1.ViewModels.CommonVM;
+//using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.HomeVM;
 using WebApplication1.ViewModels.ProductVM;
+using WebApplication1.ViewModels.CommonVM;
+using WebApplication1.ViewModels.SliderVM;
 
 namespace WebApplication1.Controllers
 {
@@ -21,11 +22,57 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Sliders = _context.Sliders;
-            ViewBag.Products = _context.Products;
-            ViewBag.Categories = _context.Categories;
+            var datas = _context.Products.Where(p => !p.IsDeleted).Take(2).Select(p => new ProductListItemVM
+            {
+                Id = p.Id,
+                Name = p.Name,
+                SellPrice = p.SellPrice,
+                Quantity = p.Quantity,
+                ProductImages = p.Images,
+                About = p.About,
+                CategoryId = p.CategoryId,
+                CostPrice = p.CostPrice,
+                Description = p.Description,
+                Discount = p.Discount,
+                HoverImageUrl = p.HoverImageUrl,
+                ImageUrl = p.ImageUrl,
+                IsDeleted = p.IsDeleted,
+            });
+            int count = await _context.Products.CountAsync(x => !x.IsDeleted);
+            PaginationVM<IEnumerable<ProductListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            HomeVM vm = new HomeVM
+            {
+                Sliders = await _context.Sliders.Select(s => new SliderListItemVM
+                {
+                    Id = s.Id,
+                    ImageUrl = s.ImageUrl,
+                    IsLeft = s.IsLeft,
+                    Text = s.Text,
+                    Title = s.Title,
+                }).ToListAsync(),
+                Products = await _context.Products.Select(p => new ProductListItemVM
+                {
+                    Id = p.Id,
+                    About = p.About,
+                    CategoryId = p.CategoryId,
+                    CostPrice = p.CostPrice,
+                    Description = p.Description,
+                    Discount = p.Discount,
+                    HoverImageUrl = p.HoverImageUrl,
+                    ImageUrl = p.ImageUrl,
+                    IsDeleted = p.IsDeleted,
+                    Name = p.Name,
+                    ProductImages = p.Images,
+                    Quantity = p.Quantity,
+                    SellPrice = p.SellPrice
+                }).ToListAsync(),
+                PaginatedProducts = pag
+                };
+            //ViewBag.Sliders = _context.Sliders;
+            //ViewBag.Products = _context.Products;
+            //ViewBag.Categories = _context.Categories;
             
-            return View(ViewBag);
+            return View(vm);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -75,7 +122,7 @@ namespace WebApplication1.Controllers
             });
             int totalCount = await _context.Products.CountAsync(x => !x.IsDeleted);
             PaginationVM<IEnumerable<ProductListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
-            return PartialView(nameof(Views_Shared__ProductPaginationPartial),pag);
+            return PartialView("_ProductPaginationPartial", pag);
         }
     }
 }

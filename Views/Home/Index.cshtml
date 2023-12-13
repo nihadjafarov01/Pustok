@@ -1,14 +1,16 @@
-﻿@{
+﻿@model HomeVM
+
+@{
     ViewData["Title"] = "Index";
 }
 
 @section scripts{
     <script>
-        $("#prod-pag a").click(function (ev) {
+        $("#featured").on("click", "#prod-pag a",function (ev) {
             ev.preventDefault();
             fetch($(this).attr("href"))
             .then(res => res.text())
-            .then(data=> console.log(data))
+            .then(data=> $("#featured").html(data))
         })
     </script>
 }
@@ -24,7 +26,7 @@
                             "slidesToShow": 1,
                             "dots":true
                             }'>
-                @foreach (var slider in ViewBag.Sliders)
+                @foreach (var slider in Model.Sliders)
                 {
                     <div class="single-slide bg-shade-whisper  ">
                         <div class="container">
@@ -123,8 +125,42 @@
         <!--=================================
         Home Slider Tab
         ===================================== -->
-    <partial model="Model.PaginatedProducts" name="@nameof(Views_Shared__ProductPaginationPartial)" />
-        <!--=================================
+<section id="featured" class="section-padding">
+    <h2 class="sr-only">Home Tab Slider Section</h2>
+    <div class="container">
+        <div class="sb-custom-tab">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="shop-tab" data-toggle="tab" href="#shop" role="tab"
+                       aria-controls="shop" aria-selected="true">
+                        Featured Products
+                    </a>
+                    <span class="arrow-icon"></span>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane show active" id="shop" role="tabpanel" aria-labelledby="shop-tab">
+                    <div class="product-slider multiple-row  slider-border-multiple-row  sb-slick-slider"
+                         data-slick-setting='{
+                            "autoplay": true,
+                            "autoplaySpeed": 8000,
+                            "slidesToShow": 5,
+                            "rows":1,
+                            "dots":true
+                        }' data-slick-responsive='[
+                            {"breakpoint":1200, "settings": {"slidesToShow": 3} },
+                            {"breakpoint":768, "settings": {"slidesToShow": 2} },
+                            {"breakpoint":480, "settings": {"slidesToShow": 1} },
+                            {"breakpoint":320, "settings": {"slidesToShow": 1} }
+                        ]'>
+                        <div class="single-slide">
+        <partial model="Model.PaginatedProducts" name="_ProductPaginationPartial" />
+                        </div>
+    </div>
+</section>
+
+
+         <!--=================================
         
         Deal of the day
         ===================================== -->
@@ -145,7 +181,7 @@
                 {"breakpoint":575, "settings": {"slidesToShow": 2} },
                 {"breakpoint":490, "settings": {"slidesToShow": 1} }
             ]'>
-                    @foreach (var item in ViewBag.Products)
+                    @foreach (var item in Model.Products)
                     {
                         @if (item.Discount >= 20)
                         {
@@ -426,7 +462,7 @@
                                             {"breakpoint":575, "settings": {"slidesToShow": 1} },
                                             {"breakpoint":490, "settings": {"slidesToShow": 1} }
                                         ]'>
-            @foreach (var item in ViewBag.Products)
+            @foreach (var item in Model.Products)
             {
               
                 if (item.CategoryId == 15)
@@ -522,7 +558,7 @@
                 {"breakpoint":480, "settings": {"slidesToShow": 1} },
                 {"breakpoint":320, "settings": {"slidesToShow": 1} }
             ]'>
-            @foreach (var item in ViewBag.Products)
+            @foreach (var item in Model.Products)
             {
                 if (item.CategoryId == 2)
                 {

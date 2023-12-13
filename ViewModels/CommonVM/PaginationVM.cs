@@ -8,7 +8,7 @@ namespace WebApplication1.ViewModels.CommonVM
         public int LastPage { get; }
         public int CurrentPage { get; }
         public bool HasPre { get; }
-        public bool HasNext { get; } = true;
+        public bool HasNext { get; }
         public T Items { get; }
 
         public PaginationVM(int totalCount, int currentPage, int lastPage, T items)
@@ -27,9 +27,18 @@ namespace WebApplication1.ViewModels.CommonVM
                 {
                     HasPre = false;
                 }
+                else
+                {
+                    HasNext = true;
+                    HasPre = true;
+                }
                 if (currentPage == lastPage)
                 {
                     HasNext = false;
+                }
+                else
+                {
+                    HasNext = true;
                 }
             }
         }
