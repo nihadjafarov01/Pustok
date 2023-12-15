@@ -8,6 +8,7 @@ using WebApplication1.ViewModels.HomeVM;
 using WebApplication1.ViewModels.ProductVM;
 using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.SliderVM;
+using WebApplication1.ViewModels.BasketVM;
 
 namespace WebApplication1.Controllers
 {
@@ -123,6 +124,32 @@ namespace WebApplication1.Controllers
             int totalCount = await _context.Products.CountAsync(x => !x.IsDeleted);
             PaginationVM<IEnumerable<ProductListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
             return PartialView("_ProductPaginationPartial", pag);
+        }
+        public string GetCookie(string key)
+        {
+            return HttpContext.Request.Cookies[key] ?? "";
+        }
+        public IActionResult GetBasket()
+        {
+            return ViewComponent("Basket");
+        }
+
+        public async Task<IActionResult> Cart()
+        {
+            var res1 = await _context.Products.Include(p => p.Images).ToListAsync();
+            var data = await _context.Products.FindAsync();
+            if (data == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Sliders = _context.Sliders;
+            ViewBag.Products = _context.Products;
+            ViewBag.Categories = _context.Categories;
+            return View(new BasketProductItemVM
+            {
+                Id = data.Id,
+                Name = data.Name,
+            });
         }
     }
 }

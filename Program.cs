@@ -16,6 +16,7 @@ namespace WebApplication1
             {
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:MSSql"]);
             });
+            builder.Services.AddSession();
 
             var app = builder.Build();
 
@@ -24,6 +25,8 @@ namespace WebApplication1
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseSession();
+
             app.UseStaticFiles();
 
             app.UseRouting();

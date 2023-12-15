@@ -1525,3 +1525,4 @@ C:\Users\Birinci Novbe\Desktop\Pustok\obj\Debug\net7.0\refint\WebApplication1.dl
 C:\Users\Birinci Novbe\Desktop\Pustok\obj\Debug\net7.0\WebApplication1.pdb
 C:\Users\Birinci Novbe\Desktop\Pustok\obj\Debug\net7.0\WebApplication1.genruntimeconfig.cache
 C:\Users\Birinci Novbe\Desktop\Pustok\obj\Debug\net7.0\ref\WebApplication1.dll
+C:\Users\Birinci Novbe\Desktop\Pustok\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll

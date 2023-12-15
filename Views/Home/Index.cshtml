@@ -12,6 +12,49 @@
             .then(res => res.text())
             .then(data=> $("#featured").html(data))
         })
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "500",
+            "timeOut": "1000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        $("body").on("click", ".add-cart", function (ev) {
+            ev.preventDefault();
+            fetch($(this).attr("href"))
+                .then(res => {
+                    if (res.ok) {
+                        Command: toastr["success"]("Product added")
+                        fetch(window.location.origin + '/Home/GetBasket')
+                            .then(res => res.text())
+                            .then(data => $("#basket").html(data))
+
+                    }
+                })
+        })
+        $("body").on("click", "#remove-cart", function (ev) {
+            ev.preventDefault();
+            fetch($(this).attr("href"))
+                .then(res => {
+                    if (res.ok) {
+                        Command: toastr["success"]("Product removed")
+                        fetch(window.location.origin + '/Home/GetBasket')
+                            .then(res => res.text())
+                            .then(data => $("#basket").html(data))
+
+                    }
+                })
+        })
     </script>
 }
         <!--=================================
@@ -153,7 +196,7 @@
                                                 </a>
                                             }
                                             <div class="hover-btns">
-                                                    <a href="cart.html" class="single-btn">
+                                                    <a asp-action="AddBasket" asp-controller="Product" asp-route-id="@item.Id" class="add-cart single-btn ">
                                                         <i class="fas fa-shopping-basket"></i>
                                                     </a>
                                                     <a href="wishlist.html" class="single-btn">
