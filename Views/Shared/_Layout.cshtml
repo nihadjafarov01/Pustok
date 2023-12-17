@@ -1,4 +1,7 @@
 ﻿@using WebApplication1.Models;
+@using WebApplication1.ViewModels.CommonVM
+
+
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -542,7 +545,23 @@
         <script src="~/js/ajax-mail.js"></script>
         <script src="~/js/custom.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
         @await RenderSectionAsync("scripts", false)
+        <script>
+            $("body").on("click", "#remcart2", function (ev) {
+                ev.preventDefault();
+                fetch($(this).attr("href"))
+                    .then(res => {
+                        if (res.ok) {
+                            Command: toastr["success"]("Product removed")
+                            fetch(window.location.origin + '/Home/GetBasket')
+                                .then(res => res.text())
+                                .then(data => $("#basket").html(data))
+
+                        }
+                    })
+            })
+        </script>
 </body>
 
 

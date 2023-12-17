@@ -7,7 +7,12 @@ using WebApplication1.Contexts;
 using WebApplication1.Helpers;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
+using WebApplication1.ViewModels.HomeVM;
 using WebApplication1.ViewModels.ProductVM;
+using WebApplication1.ViewModels.SliderVM;
+using WebApplication1.Areas.Admin.ViewModels.CommonVM;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebApplication1.Areas.Admin.Controllers
 {
@@ -23,29 +28,31 @@ namespace WebApplication1.Areas.Admin.Controllers
             _env = env;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //ViewBag.ProductImages = _db.ProductImages;
-
-            return View(_db.Products.Select(p => new AdminProductListItemVM
+            var datas = _db.Products.Take(2).Select(p => new AdminProductListItemVM
             {
                 Id = p.Id,
                 Name = p.Name,
+                SellPrice = p.SellPrice,
+                Quantity = p.Quantity,
+                Images = p.Images,
+                Category = p.Category,
                 CostPrice = p.CostPrice,
                 Discount = p.Discount,
-                Category = p.Category,
-                ImageUrl = p.ImageUrl,
                 HoverImageUrl = p.HoverImageUrl,
+                ImageUrl = p.ImageUrl,
                 IsDeleted = p.IsDeleted,
-                Quantity = p.Quantity,  
-                SellPrice = p.SellPrice,
-                Images = p.Images
-                //Images = (IEnumerable<ProductImages?>)p.Images.Select(c => c.ImagePath)
-            }));
+                Tags = p.ProductTags.Select(p => p.Tag)
+            });
+            int count = await _db.Products.CountAsync();
+            PaginationVM<IEnumerable<AdminProductListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
         public IActionResult Create()
         {
             ViewBag.Categories = _db.Categories;
+            ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
             return View();
         }
         [HttpPost]
@@ -53,23 +60,28 @@ namespace WebApplication1.Areas.Admin.Controllers
         {
             if (vm.CostPrice > vm.SellPrice)
             {
+                ViewBag.Categories = _db.Categories;
+                ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
                 ModelState.AddModelError("CostPrice", "Sell price must be bigger than cost price");
             }
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = _db.Categories;
+                ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
                 return View(vm);
             }
             if (vm.CategoryId == 0)
             {
                 ModelState.AddModelError("CategoryId", "Category must be selected");
                 ViewBag.Categories = _db.Categories;
+                ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
                 return View(vm);
             }
             if (!await _db.Categories.AnyAsync(x => x.Id == vm.CategoryId))
             {
                 ModelState.AddModelError("CategoryId", "Category doesn't exist");
                 ViewBag.Categories = _db.Categories;
+                ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
                 return View(vm);
             }
             string fileName = Path.Combine("image", "products", vm.ImageFile.FileName);
@@ -102,21 +114,11 @@ namespace WebApplication1.Areas.Admin.Controllers
                 {
                     ImagePath = i.SaveAsync(PathConstants.Product).Result
                 }).ToList(),
+                ProductTags = vm.TagIds.Select(id => new Models.ProductTags
+                {
+                    TagId = id,
+                }).ToList()
             };
-
-            //foreach (var item in vm.Images)
-            //{
-            //    fileNames = Path.Combine("image", "products", item.FileName);
-            //    using (FileStream fs = System.IO.File.Create(Path.Combine(_env.WebRootPath, fileNames)))
-            //    {
-            //        await item.CopyToAsync(fs);
-            //    }
-            //    await _db.ProductImages.AddAsync(new ProductImages
-            //    {
-            //        ImagePath = fileNames,
-            //        ProductId = prod.Id,
-            //    });
-            //}
             await _db.Products.AddAsync(prod);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -142,11 +144,12 @@ namespace WebApplication1.Areas.Admin.Controllers
             var data = await _db.Products.FindAsync(id);
             if (data == null)
             {
-                return NotFound();
+                return NotFound();  
             }
-            ViewBag.Categories = _db.Categories;
-            ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
-            return View(new ProductUpdateVM
+            //ViewBag.Categories = _db.Categories;
+            //ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
+            //ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
+            ProductUpdateVM returnData = new ProductUpdateVM
             {
                 Name = data.Name,
                 About = data.About,
@@ -160,7 +163,9 @@ namespace WebApplication1.Areas.Admin.Controllers
                 CategoryId = data.CategoryId,
                 IsDeleted = data.IsDeleted,
                 ImageUrls = _db.ProductImages.Where(pi => pi.ProductId == id).ToList(),
-        });
+                TagIds = data.ProductTags.Select(p => p.TagId),
+            };
+            return View(returnData);
         }
         [HttpPost]
         public async Task<IActionResult> Update(int? id, ProductUpdateVM vm)
@@ -210,6 +215,27 @@ namespace WebApplication1.Areas.Admin.Controllers
                 await _db.SaveChangesAsync();
             TempData["ProductUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ProductPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.Products.Skip((page - 1) * count).Take(count).Select(p => new AdminProductListItemVM
+            {
+                Id = p.Id,
+                Name = p.Name,
+                CostPrice = p.CostPrice,
+                Images = p.Images,
+                Category = p.Category,
+                IsDeleted = p.IsDeleted,
+                Quantity = p.Quantity,
+                Discount = p.Discount,
+                ImageUrl = p.ImageUrl,
+                HoverImageUrl = p.HoverImageUrl,
+                SellPrice = p.SellPrice,
+            });
+            int totalCount = await _db.Products.CountAsync();
+            PaginationVM<IEnumerable<AdminProductListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_ProductPaginationPartial" ,pag);
         }
     }
 }

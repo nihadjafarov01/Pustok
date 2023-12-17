@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Areas.Admin.ViewModels.CommonVM;
+using WebApplication1.Areas.Admin.ViewModels;
 using WebApplication1.Contexts;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
+using WebApplication1.ViewModels.ProductVM;
 using WebApplication1.ViewModels.SliderVM;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebApplication1.Areas.Admin.Controllers
 {
@@ -18,15 +23,19 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var items = await _db.Categories.Select(s => new CategoryListItemVM
+            //ViewBag.Categories = _db.Categories;
+            var datas = _db.Categories.Take(2).Select(p => new CategoryListItemVM
             {
-                Id = s.Id,
-                Name = s.Name,
-                ParentCategory = s.ParentCategory,
-                IsDeleted = s.IsDeleted,
-            }).ToListAsync();
-            ViewBag.Categories = _db.Categories;
-            return View(items);
+                Id = p.Id,
+                IsDeleted = p.IsDeleted,
+                Name = p.Name,  
+                ParentCategoryId = p.ParentCategoryId,
+                ParentCategory = p.ParentCategory,
+                
+            });
+            int count = await _db.Categories.CountAsync();
+            PaginationVM<IEnumerable<CategoryListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
         public IActionResult Create()
         {
@@ -50,7 +59,7 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.Categories.AddAsync(new Models.Category 
             { 
                 Name = vm.Name, 
-                ParentCategory = vm.ParentCategory  
+                ParentCategoryId = vm.ParentCategoryId
             });
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -76,8 +85,9 @@ namespace WebApplication1.Areas.Admin.Controllers
             return View(new CategoryUpdateVM
             {
                 Name = data.Name,
-                ParentCategory = data.ParentCategory,
                 IsDeleted = data.IsDeleted,
+                ParentCategory = data.ParentCategory,
+                ParentCategoryId = data.ParentCategoryId,
             });
         }
         [HttpPost]
@@ -87,17 +97,32 @@ namespace WebApplication1.Areas.Admin.Controllers
             if (id == null || id <= 0) return BadRequest();
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = _db.Categories.Where(o => id != o.Id && id != o.ParentCategory);
+                //ViewBag.Categories = _db.Categories.Where(o => id != o.Id && id != o.ParentCategory);
                 return View(vm);
             }
             var data = await _db.Categories.FindAsync(id);
             if (data == null) return NotFound();
             data.Name = vm.Name;
-            data.ParentCategory = (int?)vm.ParentCategory;
+            data.ParentCategoryId = (int?)vm.ParentCategoryId;
             data.IsDeleted = vm.IsDeleted;
             await _db.SaveChangesAsync();
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> CategoryPagination(int page = 1, int count = 8)
+        {
+            ViewBag.Categories = _db.Categories;
+            var datas = _db.Categories.Skip((page - 1) * count).Take(count).Select(p => new CategoryListItemVM
+            {
+                Id = p.Id,
+                IsDeleted = p.IsDeleted,
+                Name = p.Name,
+                ParentCategoryId = p.ParentCategoryId,
+                ParentCategory = p.ParentCategory,
+            });
+            int totalCount = await _db.Categories.CountAsync();
+            PaginationVM<IEnumerable<CategoryListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_CategoryPaginationPartial", pag);
         }
     }
 }

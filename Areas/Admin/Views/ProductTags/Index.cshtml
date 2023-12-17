@@ -1,0 +1,22 @@
+﻿@using WebApplication1.ViewModels.CommonVM
+@using WebApplication1.ViewModels.ProductTagsVM
+@model PaginationVM<IEnumerable<ProductTagsListItemVM>>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section scripts{
+    <script>
+        $("#featured").on("click", "#prod-pag a", function (ev) {
+            ev.preventDefault();
+            fetch($(this).attr("href"))
+                .then(res => res.text())
+                .then(data => $("#featured").html(data))
+        })
+    </script>
+}
+
+<div id="featured">
+    <partial model="Model" name="_ProductTagsPaginationPartial" />
+</div>

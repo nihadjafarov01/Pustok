@@ -19,5 +19,6 @@ namespace WebApplication1.ViewModels.ProductVM
         public int CategoryId { get; set; }
         public bool IsDeleted { get; set; } 
         public List<ProductImages>? ProductImages { get; set; }
+        public List<Tag>? Tags { get; set; }
     }
 }

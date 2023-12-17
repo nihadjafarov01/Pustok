@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
+using WebApplication1.Areas.Admin.ViewModels.CommonVM;
 using WebApplication1.Contexts;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.AuthorVM;
 using WebApplication1.ViewModels.BlogTagsVM;
 using WebApplication1.ViewModels.BlogVM;
 using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
 
 namespace WebApplication1.Areas.Admin.Controllers
 {
@@ -22,18 +24,21 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var items = await _db.Blogs.Select(s => new BlogListItemVM
+            var datas = _db.Blogs.Take(2).Select(p => new BlogListItemVM
             {
-                Id = s.Id,
-                Title = s.Title,
-                Description = s.Description,
-                AuthorId = s.AuthorId,
-                CreatedAt = s.CreatedAt,
-                UpdatedAt = s.UpdatedAt,
-                IsDeleted = s.IsDeleted,
-                Tags = s.BlogTags.Select(t =>  t.Tag)
-            }).ToListAsync();
-            return View(items);
+                Id = p.Id,
+                IsDeleted = p.IsDeleted,
+                Author = p.Author,
+                AuthorId = p.AuthorId,
+                CreatedAt = p.CreatedAt,
+                Description = p.Description,
+                Tags = p.BlogTags.Select(b => b.Tag),
+                Title = p.Title,
+                UpdatedAt = p.UpdatedAt
+            });
+            int count = await _db.Blogs.CountAsync();
+            PaginationVM<IEnumerable<BlogListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
 
         public IActionResult Create()
@@ -66,7 +71,6 @@ namespace WebApplication1.Areas.Admin.Controllers
                 BlogTags = vm.TagIds.Select(id => new Models.BlogTags
                 {
                     TagId = id,
-
                 }).ToList()
             });
             await _db.SaveChangesAsync();
@@ -87,7 +91,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 Description = data.Description,
                 AuthorId = data.AuthorId,
                 IsDeleted = data.IsDeleted,
-                TagIds = data.BlogTags.Select(t => t.TagId)
+                TagIds = data.BlogTags.Select(t => t.Id)
 
             };
             return View(returnData);
@@ -114,6 +118,7 @@ namespace WebApplication1.Areas.Admin.Controllers
             data.Description = vm.Description;
             data.AuthorId = vm.AuthorId;
             data.IsDeleted = vm.IsDeleted;
+            data.UpdatedAt = DateTime.Now;
             foreach (var item in _db.BlogTags)
             {
                 if (item.BlogId == id)
@@ -143,6 +148,24 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.SaveChangesAsync();
             TempData["DeleteResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> BlogPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.Blogs.Skip((page - 1) * count).Take(count).Select(p => new BlogListItemVM
+            {
+                Id = p.Id,
+                Tags = p.BlogTags.Select(b => b.Tag),
+                CreatedAt = p.CreatedAt,
+                UpdatedAt = p.UpdatedAt,
+                Title = p.Title,
+                Author = p.Author,
+                AuthorId = p.AuthorId,
+                IsDeleted = p.IsDeleted,
+                Description = p.Description,
+            });
+            int totalCount = await _db.Blogs.CountAsync();
+            PaginationVM<IEnumerable<BlogListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_BlogPaginationPartial", pag);
         }
     }
 }

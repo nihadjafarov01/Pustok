@@ -21,11 +21,11 @@
                 <span asp-validation-for="ParentCategory" class="text-danger"></span>
             </div> *@
             <div class="form-group">
-                <label asp-for="ParentCategory">ParentCategory</label>
-                <select class="form-control" asp-for="ParentCategory" asp-items='@new SelectList(ViewBag.Categories,"Id","Name")'>
+                <label asp-for="ParentCategoryId">ParentCategory</label>
+                <select class="form-control" asp-for="ParentCategoryId" asp-items='@new SelectList(ViewBag.Categories,"Id","Name")'>
                     <option disabled selected>Select parent category</option>
                 </select>
-                <span asp-validation-for="ParentCategory" class="text-danger"></span>
+                <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
             </div>
             <button class="btn btn-success">Submit</button>
             <button asp-action="Index" class="btn btn-cancel">Cancel</button>

@@ -13,6 +13,6 @@ namespace WebApplication1.ViewModels.BlogVM
         public int AuthorId { get; set; }
         public Author Author { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public IEnumerable<Tag?> Tags { get; set; }
+        public IEnumerable<Tag>? Tags { get; set; }
     }
 }

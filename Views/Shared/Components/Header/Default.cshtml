@@ -1,9 +1,12 @@
-﻿<div class="site-header d-none d-lg-block">
+﻿@using WebApplication1.ViewModels.HomeVM
+@using WebApplication1.Models
+
+<div class="site-header d-none d-lg-block">
     <div class="header-middle pt--10 pb--10">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-3 ">
-                    <a href="index.html" class="site-brand">
+                    <a asp-controller="Home" asp-action="Index" class="site-brand">
                         <img src="~/image/logo.png" alt="">
                     </a>
                 </div>
@@ -173,42 +176,9 @@
     <div class="header-bottom pb--10">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-3">
-                    <nav class="category-nav   ">
-                        <div>
-                            <a href="javascript:void(0)" class="category-trigger">
-                                <i class="fa fa-bars"></i>Browse
-                                categories
-                            </a>
-                            <ul class="category-menu">
-                                @*                                         @foreach(Category item in Model.Categories)
-                                {
-                                if (item.ParentCategory == null)
-                                { *@
-                                @*                                                 @if (((IEnumerable<Category>)ViewBag.Categories).Count(c => c.ParentCategory == item.Id) > 0)
-                                {
-                                <li class="cat-item has-children">
-                                <a href="#">@item.Name</a>
-                                <ul class="sub-menu">
-                                @foreach (Category sub in ((IEnumerable<Category>)ViewBag.Categories).Where(c => c.ParentCategory == item.Id))
-                                {
-                                <li><a href="#">@sub.Name</a></li>
-                                }
-                                </ul>
-                                </li>
-                                }
-                                else
-                                {
-                                <li class="cat-item">
-                                <a href="#">@item.Name</a>
-                                </li>
-                                } *@
-                                }
-                                }
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
+
+                    @await Component.InvokeAsync("BrowseCategories")
+
                 <div class="col-lg-5">
                     <div class="header-search-block">
                         <input type="text" placeholder="Search entire store here">
@@ -222,7 +192,8 @@
                                 <a href="login-register.html" class="font-weight-bold">Login</a> <br>
                                 <span>or</span><a href="login-register.html">Register</a>
                             </div>
-                <div id="basket">
+
+                <div id="basket" class="cart-block">
                     @await Component.InvokeAsync("Basket")
                 </div>
                         </div>

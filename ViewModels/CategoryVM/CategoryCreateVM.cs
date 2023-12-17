@@ -8,6 +8,6 @@ namespace WebApplication1.ViewModels.CategoryVM
         public int Id { get; set; }
         [MaxLength(30)]
         public string Name { get; set; }
-        public int? ParentCategory { get; set; }
+        public int? ParentCategoryId { get; set; }
     }
 }

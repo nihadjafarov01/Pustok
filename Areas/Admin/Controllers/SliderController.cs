@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.SliderVM;
+using WebApplication1.Areas.Admin.ViewModels.CommonVM;
+using WebApplication1.Areas.Admin.ViewModels;
+using WebApplication1.ViewModels.CommonVM;
+using WebApplication1.ViewModels.ProductVM;
 
 namespace WebApplication1.Areas.Admin.Controllers
 {
@@ -18,15 +22,17 @@ namespace WebApplication1.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var items = await _db.Sliders.Select(s => new SliderListItemVM
+            var datas = _db.Sliders.Take(2).Select(p => new SliderListItemVM
             {
-                Title = s.Title,
-                Text = s.Text,
-                IsLeft = s.IsLeft,
-                ImageUrl = s.ImageUrl,
-                Id = s.Id
-            }).ToListAsync();
-            return View(items);
+                Id = p.Id,
+                ImageUrl = p.ImageUrl,
+                IsLeft = p.IsLeft,
+                Text = p.Text,
+                Title = p.Title
+            });
+            int count = await _db.Sliders.CountAsync();
+            PaginationVM<IEnumerable<SliderListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
 
         public IActionResult Create()
@@ -118,6 +124,20 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.SaveChangesAsync();
             TempData["SliderUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> SliderPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.Sliders.Skip((page - 1) * count).Take(count).Select(p => new SliderListItemVM
+            {
+                Id = p.Id,
+                ImageUrl = p.ImageUrl,
+                IsLeft = p.IsLeft,
+                Text = p.Text,
+                Title = p.Title,
+            });
+            int totalCount = await _db.Sliders.CountAsync();
+            PaginationVM<IEnumerable<SliderListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_SliderPaginationPartial", pag);
         }
     }
 }

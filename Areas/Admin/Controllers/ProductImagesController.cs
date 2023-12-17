@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Areas.Admin.ViewModels.CommonVM;
+using WebApplication1.Areas.Admin.ViewModels;
 using WebApplication1.Contexts;
 using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.ProductImagesVM;
+using WebApplication1.ViewModels.ProductVM;
 using WebApplication1.ViewModels.SliderVM;
 
 namespace WebApplication1.Areas.Admin.Controllers
@@ -20,14 +24,16 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var items = await _db.ProductImages.Select(s => new ProductImagesListItemVM
+            var datas = _db.ProductImages.Take(2).Select(p => new ProductImagesListItemVM
             {
-                Id = s.Id,
-                ImagePath = s.ImagePath,
-                ProductId = s.ProductId,
-                IsActive = s.IsActive
-            }).ToListAsync();
-            return View(items);
+                Id = p.Id,
+                ImagePath = p.ImagePath,
+                IsActive = p.IsActive,
+                ProductId = p.ProductId
+            });
+            int count = await _db.ProductImages.CountAsync();
+            PaginationVM<IEnumerable<ProductImagesListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
         public IActionResult Create()
         {
@@ -130,6 +136,20 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.SaveChangesAsync();
             TempData["UpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ProductImagesPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.ProductImages.Skip((page - 1) * count).Take(count).Select(p => new ProductImagesListItemVM
+            {
+                Id = p.Id,
+                ImagePath = p.ImagePath,
+                IsActive = p.IsActive,
+                ProductId = p.ProductId,
+            });
+            int totalCount = await _db.ProductImages.CountAsync();
+            PaginationVM<IEnumerable<ProductImagesListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_ProductImagesPaginationPartial", pag);
         }
     }
 }

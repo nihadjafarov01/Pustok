@@ -7,5 +7,6 @@ namespace WebApplication1.Models
         public int Id{ get; set; }
         [Required ,MaxLength()]
         public string Title{ get; set; }
+        public ICollection<BlogTags?> BlogTags { get; set; }
     }
 }

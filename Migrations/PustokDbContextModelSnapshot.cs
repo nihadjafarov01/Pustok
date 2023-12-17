@@ -121,10 +121,12 @@ namespace WebApplication1.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int?>("ParentCategory")
+                    b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -206,6 +208,29 @@ namespace WebApplication1.Migrations
                     b.ToTable("ProductImages");
                 });
 
+            modelBuilder.Entity("WebApplication1.Models.ProductTags", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ProductTags");
+                });
+
             modelBuilder.Entity("WebApplication1.Models.Slider", b =>
                 {
                     b.Property<int>("Id")
@@ -273,7 +298,7 @@ namespace WebApplication1.Migrations
                         .IsRequired();
 
                     b.HasOne("WebApplication1.Models.Tag", "Tag")
-                        .WithMany()
+                        .WithMany("BlogTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -281,6 +306,15 @@ namespace WebApplication1.Migrations
                     b.Navigation("Blog");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Category", b =>
+                {
+                    b.HasOne("WebApplication1.Models.Category", "ParentCategory")
+                        .WithMany()
+                        .HasForeignKey("ParentCategoryId");
+
+                    b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Product", b =>
@@ -305,6 +339,25 @@ namespace WebApplication1.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("WebApplication1.Models.ProductTags", b =>
+                {
+                    b.HasOne("WebApplication1.Models.Product", "Product")
+                        .WithMany("ProductTags")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApplication1.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("WebApplication1.Models.Author", b =>
                 {
                     b.Navigation("Blogs");
@@ -323,6 +376,13 @@ namespace WebApplication1.Migrations
             modelBuilder.Entity("WebApplication1.Models.Product", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("ProductTags");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Tag", b =>
+                {
+                    b.Navigation("BlogTags");
                 });
 #pragma warning restore 612, 618
         }

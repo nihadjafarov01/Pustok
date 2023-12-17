@@ -38,23 +38,11 @@
                         fetch(window.location.origin + '/Home/GetBasket')
                             .then(res => res.text())
                             .then(data => $("#basket").html(data))
-
                     }
                 })
         })
-        $("body").on("click", "#remove-cart", function (ev) {
-            ev.preventDefault();
-            fetch($(this).attr("href"))
-                .then(res => {
-                    if (res.ok) {
-                        Command: toastr["success"]("Product removed")
-                        fetch(window.location.origin + '/Home/GetBasket')
-                            .then(res => res.text())
-                            .then(data => $("#basket").html(data))
 
-                    }
-                })
-        })
+
     </script>
 }
         <!--=================================
@@ -114,6 +102,7 @@
                 </div>
             </div>
         </section>
+
         <!--=================================
         Promotion Section One
         ===================================== -->
@@ -137,10 +126,14 @@
         <!--=================================
         Home Slider Tab
         ===================================== -->
-    <section id="featured" class="section-margin">
-        <partial model="Model.PaginatedProducts" name="_ProductPaginationPartial" />
-</section>
+    <section class="section-margin">
 
+    <div id="featured" class="container">
+
+        <partial model="Model.PaginatedProducts" name="_ProductPaginationPartial" />
+    </div>
+
+    </section>
 
          <!--=================================
         
@@ -174,7 +167,7 @@
                                         Ypple
                                     </a>
                                     <h3>
-                                    <a asp-action="Details" asp-route-id="@item.Id">
+                                    <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id">
                                             @item.Name
                                         </a>
                                     </h3>
@@ -185,13 +178,13 @@
                                             <div class="hover-contents">
                                         @if (item.HoverImageUrl != null)
                                         {
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
+                                            <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id" class="hover-image">
                                                     <img src="~/@item.HoverImageUrl" alt="">
                                                 </a>
                                         }
                                             else
                                             {
-                                                  <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
+                                            <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id" class="hover-image">
                                                     <img src="~/@item.ImageUrl" alt="">
                                                 </a>
                                             }
@@ -214,8 +207,8 @@
                                         
                                     </div>
                                     <div class="price-block">
-                                        <span class="price">@(item.SellPrice * (decimal)item.Discount / 100)</span>
-                                        <del class="price-old">@item.SellPrice</del>
+                                    <span class="price">$@Math.Round((item.SellPrice * (decimal)item.Discount / 100),2)</span>
+                                    <del class="price-old">$@Math.Round(item.SellPrice, 2)</del>
                                         <span class="price-discount">@item.Discount%</span>
                                     </div>
                                     <div class="count-down-block">
@@ -271,7 +264,7 @@
                                                     Rpple
                                                 </a>
                                                 <h3>
-                                                    <a asp-action="Details">
+                                            <a asp-controller="ProductDetails" asp-action="Index">
                                                         Do You Really Need It? This
                                                         Will Help You
                                                     </a>
@@ -296,7 +289,7 @@
                                                     Epple
                                                 </a>
                                                 <h3>
-                                                    <a asp-action="Details">
+                                            <a asp-controller="ProductDetails" asp-action="Index">
                                                         Here Is Quick Cure BOOK This
                                                         Will Help
 
@@ -322,7 +315,7 @@
                                                     Wpple
                                                 </a>
                                                 <h3>
-                                                    <a asp-action="Details">
+                                            <a asp-controller="ProductDetails" asp-action="Index">
                                                         Do You Really Need It? This
                                                         Will Help You
 
@@ -348,7 +341,7 @@
                                                     Ypple
                                                 </a>
                                                 <h3>
-                                                    <a asp-action="Details">
+                                            <a asp-controller="ProductDetails" asp-action="Index">
                                                         Very Simple Things You
                                                         Can Save BOOK
 
@@ -376,7 +369,7 @@
                                                     Mople
                                                 </a>
                                                 <h3>
-                                                    <a asp-action="Details">
+                                            <a asp-controller="ProductDetails" asp-action="Index">
                                                         What You Can Learn From Bill Gates
 
                                                     </a>
@@ -401,7 +394,7 @@
                                                     Cpple
                                                 </a>
                                                 <h3>
-                                                    <a asp-action="Details">
+                                            <a asp-controller="ProductDetails" asp-action="Index">
                                                         3 Ways Create Better BOOK With
                                                         Help
 
@@ -447,8 +440,8 @@
             @foreach (var item in Model.Products)
             {
               
-                if (item.CategoryId == 15)
-                {
+@*                 if (item.CategoryId == 15)
+ *@                {
                     <div class="single-slide">
                         <div class="product-card card-style-list">
                             <div class="card-image">
@@ -460,12 +453,12 @@
                                         Dpple
                                     </a>
                                     <h3>
-                                        <a asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                        <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
                                     </h3>
                                 </div>
                                 <div class="price-block">
-                                    <span class="price">@(item.SellPrice * (decimal)item.Discount / 100)</span>
-                                    <del class="price-old">@item.SellPrice</del>
+                                    <span class="price">$@Math.Round((item.SellPrice * (decimal)item.Discount / 100),2)</span>
+                                    <del class="price-old">$@Math.Round(item.SellPrice, 2)</del>
                                     <span class="price-discount">@item.Discount%</span>
                                 </div>
                             </div>
@@ -542,8 +535,8 @@
             ]'>
             @foreach (var item in Model.Products)
             {
-                if (item.CategoryId == 2)
-                {
+@*                 if (item.CategoryId == 2)
+ *@                {
                     <div class="single-slide">
                         <div class="product-card">
                             <div class="product-header">
@@ -551,14 +544,14 @@
                                     Jpple
                                 </a>
                                 <h3>
-                                    <a asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                    <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
                                 </h3>
                             </div>
                             <div class="product-card--body">
                                 <div class="card-image">
                                     <img src="~/@item.ImageUrl" alt="">
                                     <div class="hover-contents">
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
+                                        <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id" class="hover-image">
                                             @if (item.HoverImageUrl != null)
                                             {
                                                 <img src="~/@item.HoverImageUrl" alt="">
@@ -569,7 +562,7 @@
                                             }
                                         </a>
                                         <div class="hover-btns">
-                                            <a href="cart.html" class="single-btn">
+                                            <a asp-action="AddBasket" asp-controller="Product" asp-route-id="@item.Id" class="add-cart single-btn ">
                                                 <i class="fas fa-shopping-basket"></i>
                                             </a>
                                             <a href="wishlist.html" class="single-btn">
@@ -586,8 +579,8 @@
                                     </div>
                                 </div>
                                 <div class="price-block">
-                                    <span class="price">@(item.SellPrice * (decimal)item.Discount / 100)</span>
-                                    <del class="price-old">@item.SellPrice</del>
+                                    <span class="price">$@Math.Round((item.SellPrice * (decimal)item.Discount / 100),2)</span>
+                                    <del class="price-old">$@Math.Round(item.SellPrice, 2)</del>
                                     <span class="price-discount">@item.Discount%</span>
                                 </div>
                             </div>

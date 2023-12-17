@@ -5,6 +5,7 @@ using WebApplication1.Models;
 using WebApplication1.ViewModels.AuthorVM;
 using WebApplication1.ViewModels.BlogVM;
 using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.ProductVM;
 
 namespace WebApplication1.Areas.Admin.Controllers
@@ -20,14 +21,16 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var items = await _db.Authors.Select(s => new AuthorListItemVM
+            var datas = _db.Authors.Take(2).Select(p => new AuthorListItemVM
             {
-                Id = s.Id,
-                Name = s.Name,
-                Surname = s.Surname,
-                Blogs = s.Blogs
-            }).ToListAsync();
-            return View(items);
+                Id = p.Id,
+                Blogs = p.Blogs,
+                Name = p.Name,
+                Surname = p.Surname
+            });
+            int count = await _db.Authors.CountAsync();
+            PaginationVM<IEnumerable<AuthorListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
 
         public IActionResult Create()
@@ -90,6 +93,19 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.SaveChangesAsync();
             TempData["DeleteResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> AuthorPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.Authors.Skip((page - 1) * count).Take(count).Select(p => new AuthorListItemVM
+            {
+                Id = p.Id,
+                Surname = p.Surname,
+                Name = p.Name,
+                Blogs = p.Blogs,
+            });
+            int totalCount = await _db.Authors.CountAsync();
+            PaginationVM<IEnumerable<AuthorListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_AuthorPaginationPartial", pag);
         }
     }
 }

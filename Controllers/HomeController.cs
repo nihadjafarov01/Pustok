@@ -9,6 +9,9 @@ using WebApplication1.ViewModels.ProductVM;
 using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.SliderVM;
 using WebApplication1.ViewModels.BasketVM;
+using WebApplication1.ViewModels.CategoryVM;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace WebApplication1.Controllers
 {
@@ -28,7 +31,7 @@ namespace WebApplication1.Controllers
                 Id = p.Id,
                 Name = p.Name,
                 SellPrice = p.SellPrice,
-                Quantity = p.Quantity,
+            Quantity = p.Quantity,
                 ProductImages = p.Images,
                 About = p.About,
                 CategoryId = p.CategoryId,
@@ -69,44 +72,25 @@ namespace WebApplication1.Controllers
                 }).ToListAsync(),
                 PaginatedProducts = pag
                 };
-            //ViewBag.Sliders = _context.Sliders;
-            //ViewBag.Products = _context.Products;
-            //ViewBag.Categories = _context.Categories;
-            
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Products = await _context.Products.ToListAsync();
+            //var items = JsonConvert.DeserializeObject<List<BasketProductAndCountVM>>(HttpContext.Request.Cookies["basket"] ?? "[]");
+            //var products = _context.Products.Where(p => items.Select(i => i.Id).Contains(p.Id));
+            //List<BasketProductItemVM> basketItems = new();
+            //foreach (var item in products)
+            //{
+            //    basketItems.Add(new BasketProductItemVM
+            //    {
+            //        Id = item.Id,
+            //        Discount = item.Discount,
+            //        ImageUrl = item.ImageUrl,
+            //        Name = item.Name,
+            //        Price = item.SellPrice,
+            //        Count = items.FirstOrDefault(x => x.Id == item.Id).Count
+            //    });
+            //}
+            //ViewBag.BasketProducts = basketItems;
             return View(vm);
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || id <= 0)
-            {
-                return BadRequest();
-            }
-            var res1 = await _context.Products.Include(p => p.Images).ToListAsync();
-            var data = await _context.Products.FindAsync(id);
-            if (data == null)
-            {
-                return NotFound();
-            }
-            ViewBag.Sliders = _context.Sliders;
-            ViewBag.Products = _context.Products;
-            ViewBag.Categories = _context.Categories;
-            return View(new ProductDetailVM
-            {
-                Id = data.Id,
-                Name = data.Name,
-                About = data.About,
-                Description = data.Description,
-                ImageUrl = data.ImageUrl,
-                HoverImageUrl = data.HoverImageUrl,
-                SellPrice = data.SellPrice,
-                CostPrice = data.CostPrice,
-                Discount = data.Discount,
-                Quantity = data.Quantity,
-                CategoryId = data.CategoryId,
-                IsDeleted = data.IsDeleted,
-                ImageUrls = data.Images
-            });
         }
 
         public async Task<IActionResult> ProductPagination(int page = 1, int count = 8)
@@ -129,27 +113,45 @@ namespace WebApplication1.Controllers
         {
             return HttpContext.Request.Cookies[key] ?? "";
         }
-        public IActionResult GetBasket()
+        public async Task<IActionResult> GetBasket()
         {
             return ViewComponent("Basket");
         }
 
         public async Task<IActionResult> Cart()
         {
-            var res1 = await _context.Products.Include(p => p.Images).ToListAsync();
-            var data = await _context.Products.FindAsync();
-            if (data == null)
+            HomeVM vm = new HomeVM
             {
-                return NotFound();
-            }
-            ViewBag.Sliders = _context.Sliders;
-            ViewBag.Products = _context.Products;
-            ViewBag.Categories = _context.Categories;
-            return View(new BasketProductItemVM
-            {
-                Id = data.Id,
-                Name = data.Name,
-            });
+                Sliders = await _context.Sliders.Select(s => new SliderListItemVM
+                {
+                    Id = s.Id,
+                    ImageUrl = s.ImageUrl,
+                    IsLeft = s.IsLeft,
+                    Text = s.Text,
+                    Title = s.Title,
+                }).ToListAsync(),
+                Products = await _context.Products.Select(p => new ProductListItemVM
+                {
+                    Id = p.Id,
+                    About = p.About,
+                    CategoryId = p.CategoryId,
+                    CostPrice = p.CostPrice,
+                    Description = p.Description,
+                    Discount = p.Discount,
+                    HoverImageUrl = p.HoverImageUrl,
+                    ImageUrl = p.ImageUrl,
+                    IsDeleted = p.IsDeleted,
+                    Name = p.Name,
+                    ProductImages = p.Images,
+                    Quantity = p.Quantity,
+                    SellPrice = p.SellPrice
+                }).ToListAsync(),
+            };
+            return View(vm);
+        }
+        public IActionResult GetCart()
+        {
+            return ViewComponent("Cart");
         }
     }
 }

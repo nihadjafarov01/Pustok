@@ -4,6 +4,8 @@ using WebApplication1.Contexts;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.BlogTagsVM;
 using WebApplication1.ViewModels.BlogVM;
+using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.TagVM;
 
 namespace WebApplication1.Areas.Admin.Controllers
@@ -19,13 +21,17 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var items = await _db.BlogTags.Select(s => new BlogTagsListItemVM
+            var datas = _db.BlogTags.Take(2).Select(p => new BlogTagsListItemVM
             {
-                Id = s.Id,
-                BlogId = s.BlogId,
-                TagId = s.TagId,
-            }).ToListAsync();
-            return View(items);
+                Id = p.Id,
+                Blog = p.Blog,
+                BlogId = p.BlogId,
+                Tag = p.Tag,
+                TagId = p.TagId
+            });
+            int count = await _db.BlogTags.CountAsync();
+            PaginationVM<IEnumerable<BlogTagsListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
         public IActionResult Create()
         {
@@ -92,6 +98,20 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.SaveChangesAsync();
             TempData["BlogTagsDeleteResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> BlogTagsPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.BlogTags.Skip((page - 1) * count).Take(count).Select(p => new BlogTagsListItemVM
+            {
+                Id = p.Id,
+                TagId = p.TagId,
+                Tag = p.Tag,
+                BlogId = p.BlogId,
+                Blog = p.Blog
+            });
+            int totalCount = await _db.BlogTags.CountAsync();
+            PaginationVM<IEnumerable<BlogTagsListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_BlogTagsPaginationPartial", pag);
         }
     }
 }

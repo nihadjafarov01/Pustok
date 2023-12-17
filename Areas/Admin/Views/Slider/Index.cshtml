@@ -1,9 +1,19 @@
-﻿@model List<SliderListItemVM>
+﻿@using WebApplication1.ViewModels.CommonVM
+@using WebApplication1.Areas.Admin.ViewModels.CommonVM
+@model PaginationVM<IEnumerable<SliderListItemVM>>
 
 @{
     ViewData["Title"] = "Slider";
 }
 @section scripts{
+    <script>
+        $("#featured").on("click", "#prod-pag a", function (ev) {
+            ev.preventDefault();
+            fetch($(this).attr("href"))
+                .then(res => res.text())
+                .then(data => $("#featured").html(data))
+        })
+    </script>
     @if (TempData["SliderDeleteResponse"] != null)
     {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -60,36 +70,9 @@
         }
     }
 }
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary text-center">Sliders</h6>
-        <a asp-action="Create" class="btn btn-outline-success">Create</a>
-    </div>
-    <div class="card-body">
-    <div class="table-responsive">
-    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Text</th>
-            <th>Image</th>
-            <th>Position</th>
-            <th colspan="2">Action</th>
-        </thead>
-        <tbody>
-            @foreach (var item in Model){
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>@item.Text</td>
-                    <td><img width="200" src="@item.ImageUrl" /></td>
-                    <td>@(item.IsLeft == true ? "left" : item.IsLeft == false ? "right" : "middle" )</td>
-                    <td><a class="btn btn-outline-info" asp-action="Update" asp-route-id="@item.Id">Update</a> </td>
-                    <td><a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+<div id="featured">
+    <partial model="Model" name="_SliderPaginationPartial" />
 </div>
-    </div>
-</div>
+
+

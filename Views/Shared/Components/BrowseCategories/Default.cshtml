@@ -1,0 +1,40 @@
+﻿@using WebApplication1.ViewModels.CategoryVM
+
+@model List<CategoryListItemVM>
+
+<div class="col-lg-3">
+    <nav class="category-nav   ">
+        <div>
+            <a href="javascript:void(0)" class="category-trigger">
+                <i class="fa fa-bars"></i>Browse
+                categories
+            </a>
+            <ul class="category-menu">
+                @foreach (var item in Model)
+                {
+                    if (item.ParentCategoryId == null)
+                    {
+                        @if (Model.Count(c => c.ParentCategoryId == item.Id) > 0)
+                        {
+                            <li class="cat-item has-children">
+                                <a href="#">@item.Name</a>
+                                <ul class="sub-menu">
+                                    @foreach (var sub in Model.Where(c => c.ParentCategoryId == item.Id))
+                                    {
+                                        <li><a href="#">@sub.Name</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="cat-item">
+                                <a href="#">@item.Name</a>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+    </nav>
+</div>

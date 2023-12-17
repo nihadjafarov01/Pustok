@@ -24,5 +24,7 @@ namespace WebApplication1.Models
         public Category? Category { get; set; }
         public bool IsDeleted { get; set; } = false;
         public List<ProductImages>? Images { get; set; }
+        public IEnumerable<ProductTags>? ProductTags { get; set; }
+
     }
 }

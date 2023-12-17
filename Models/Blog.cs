@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
@@ -10,10 +11,10 @@ namespace WebApplication1.Models
         [MaxLength(300)]
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public int AuthorId { get; set; }
         public Author Author { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public IEnumerable<BlogTags?> BlogTags { get; set; }
+        public IEnumerable<BlogTags>? BlogTags { get; set; }
     }
 }

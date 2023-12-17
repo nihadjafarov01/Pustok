@@ -1,43 +1,48 @@
 ﻿﻿@using WebApplication1.ViewModels.BasketVM
+﻿@using WebApplication1.Models
 
 @model List<BasketProductItemVM>
 
-<div class="cart-block">
     <div class="cart-total">
         <span class="text-number">
-            @Model.Sum(x=>x.Count)
+            @(Model.Sum(x=>x.Count))
         </span>
         <span class="text-item">
             Shopping Cart
         </span>
         <span class="price">
-            £@Model.Sum(p=> p.Count * p.Price)
+        $@(Math.Round((Model.Sum(p=> p.Count * p.Price)),2))
             <i class="fas fa-chevron-down"></i>
         </span>
     </div>
     <div class="cart-dropdown-block">
-        @foreach (var item in Model)
+    @foreach (var item in Model)
         {
             <div class=" single-cart-block ">
                 <div class="cart-product">
-                    <a href="product-details.html" class="image">
+                    <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id" class="image">
                         <img src="~/@item.ImageUrl" alt="">
                     </a>
                     <div class="content">
                         <h3 class="title">
-                            <a href="product-details.html">
+                            <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id">
                                 @item.Name
                             </a>
                         </h3>
-                        <p class="price"><span class="qty">@item.Count ×</span> £@item.Price</p>
-                        <button class="cross-btn"><a asp-action="RemoveBasket" asp-controller="Product" asp-route-id="@item.Id" class="fas fa-times" id="remove-cart"></a></button>
+                        <p class="price"><span class="qty">@item.Count ×</span> £@(Math.Round(item.Price,2))</p>
+                        <button class="cross-btn">
+                            <a id="remcart2" asp-action="RemoveBasket" asp-controller="Product" asp-route-id="@item.Id">
+                            <i class="fas fa-times">
+                            </i>
+                            </a>
+                        </button>
                     </div>
                 </div>
             </div>
         }
         <div class=" single-cart-block ">
             <div class="btn-block">
-                <a asp-action="Cart" asp-controller="Home" class="btn">
+                <a asp-action="Index" asp-controller="Cart" class="btn">
                     View Cart <i class="fas fa-chevron-right"></i>
                 </a>
                 <a href="checkout.html" class="btn btn--primary">
@@ -46,4 +51,3 @@
             </div>
         </div>
     </div>
-</div>

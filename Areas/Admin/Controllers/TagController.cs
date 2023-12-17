@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Contexts;
 using WebApplication1.Models;
+using WebApplication1.ViewModels.BlogVM;
 using WebApplication1.ViewModels.CategoryVM;
+using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.SliderVM;
 using WebApplication1.ViewModels.TagVM;
 
@@ -19,12 +21,15 @@ namespace WebApplication1.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var items = await _db.Tags.Select(s => new TagListItemVM
+            var datas = _db.Tags.Take(2).Select(p => new TagListItemVM
             {
-                Id = s.Id,
-                Title = s.Title,
-            }).ToListAsync();
-            return View(items);
+                Id = p.Id,
+                BlogTags = p.BlogTags,
+                Title = p.Title,
+            });
+            int count = await _db.Tags.CountAsync();
+            PaginationVM<IEnumerable<TagListItemVM>> pag = new(count, 1, (int)Math.Ceiling((decimal)count / 2), datas);
+            return View(pag);
         }
         public IActionResult Create()
         {
@@ -78,6 +83,19 @@ namespace WebApplication1.Areas.Admin.Controllers
             await _db.SaveChangesAsync();
             TempData["TagDeleteResponse"] = true;
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> TagPagination(int page = 1, int count = 8)
+        {
+            var datas = _db.Tags.Skip((page - 1) * count).Take(count).Select(p => new TagListItemVM
+            {
+                Id = p.Id,
+                Title = p.Title,
+                BlogTags = p.BlogTags,
+            });
+            int totalCount = await _db.Tags.CountAsync();
+            PaginationVM<IEnumerable<TagListItemVM>> pag = new(totalCount, page, (int)Math.Ceiling((decimal)totalCount / count), datas);
+            return PartialView("_TagPaginationPartial", pag);
         }
     }
 }

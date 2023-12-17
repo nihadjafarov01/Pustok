@@ -1,43 +1,39 @@
-﻿@model PaginationVM<IEnumerable<ProductListItemVM>>
+﻿ @model PaginationVM<IEnumerable<ProductListItemVM>>
 
-<section class="section-margin">
-    <div class="container-fluid">
-        <div class="promo-section-heading">
-            <h2>Deal of the day up to 20% off Special offer</h2>
-        </div>
-                     <div class="row">
-        @foreach (var item in Model.Items)
-        {
-                <div class="col-sm">
+<div class="row justify-content-md-center">
+            @foreach (var item in Model.Items)
+            {
+        <div class="col" style="max-width: 24%;">
+                <div class="single-slide" style="width: 100%; display: inline-block;">
                         <div class="product-card">
                             <div class="product-header">
                                 <a href="#" class="author">
                                     Ypple
                                 </a>
                                 <h3>
-                                    <a asp-action="Details" asp-route-id="@item.Id">
+                                <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id">
                                         @item.Name
                                     </a>
                                 </h3>
                             </div>
                             <div class="product-card--body">
-                                <div class="card-image">
+                                <div class="card-image mw-10 mh-10">
                                     <img src="~/@item.ImageUrl" alt="">
                                     <div class="hover-contents">
                                         @if (item.HoverImageUrl != null)
                                         {
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
-                                                <img src="~/@item.HoverImageUrl" alt="">
+                                            <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id" class="hover-image">
+                                        <img src="~/@item.HoverImageUrl" alt="">
                                             </a>
                                         }
                                         else
                                         {
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="hover-image">
+                                        <a asp-controller="ProductDetails" asp-action="Index" asp-route-id="@item.Id" class="hover-image">
                                                 <img src="~/@item.ImageUrl" alt="">
                                             </a>
                                         }
                                         <div class="hover-btns">
-                                            <a href="cart.html" class="single-btn">
+                                            <a asp-action="AddBasket" asp-controller="Product" asp-route-id="@item.Id" class="add-cart single-btn ">
                                                 <i class="fas fa-shopping-basket"></i>
                                             </a>
                                             <a href="wishlist.html" class="single-btn">
@@ -54,19 +50,18 @@
                                     </div>
 
                                 </div>
-                                <div class="price-block">
-                                    <span class="price">@(item.SellPrice * (decimal)item.Discount / 100)</span>
-                                    <del class="price-old">@item.SellPrice</del>
-                                    <span class="price-discount">@item.Discount%</span>
-                                </div>
+                            <div class="price-block">
+                                <span class="price">$@Math.Round((item.SellPrice * (decimal)item.Discount / 100),2)</span>
+                                <del class="price-old">$@Math.Round(item.SellPrice, 2)</del>
+                                <span class="price-discount">@item.Discount%</span>
+                            </div>
                             </div>
                         </div>
+                </div>
             </div>
-
             }
-        </div>
-    </div>
-
+</div>
+                <br>
                 <nav aria-label="Page navigation example">
                     <ul id="prod-pag" class="pagination justify-content-center">
                         <li class="page-item @(Model.HasPre ? "" : "disabled")"><a class="page-link" asp-action="ProductPagination" asp-route-page="@(Model.CurrentPage - 1)" asp-route-count="2">Previous</a></li>
@@ -77,7 +72,6 @@
                         <li class="page-item @(Model.HasNext ? "" : "disabled")"><a class="page-link" asp-action="ProductPagination" asp-route-page="@(Model.CurrentPage + 1)" asp-route-count="2">Next</a></li>
                     </ul>
                 </nav>
-</section>
 
 
 
