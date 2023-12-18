@@ -26,6 +26,6 @@ namespace WebApplication1.ViewModels.ProductVM
         public ushort Quantity { get; set; }
         public int CategoryId { get; set; }
         public bool IsDeleted { get; set; }
-        public IEnumerable<int>? TagIds { get; set; }
+        public IEnumerable<int> TagIds { get; set; }
     }
 }

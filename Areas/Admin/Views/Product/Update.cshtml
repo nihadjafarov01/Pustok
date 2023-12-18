@@ -88,7 +88,7 @@
             <div class="form-group">
                 <label asp-for="TagIds">Tags</label>
                 <select class="form-control" asp-for="TagIds" asp-items='(ViewBag.Tags)'>
-                    <option value="none" disabled selected>Select tags</option>
+                    <option value="none" disabled>Select tags</option>
                 </select>
                 <span asp-validation-for="TagIds" class="text-danger"></span>
             </div>

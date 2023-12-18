@@ -141,14 +141,15 @@ namespace WebApplication1.Areas.Admin.Controllers
             {
                 return BadRequest();
             }
-            var data = await _db.Products.FindAsync(id);
+            var data = await _db.Products.Include(b => b.ProductTags).SingleOrDefaultAsync(b => b.Id == id);
+            //var data = await _db.Products.FindAsync(id);
             if (data == null)
             {
                 return NotFound();  
             }
-            //ViewBag.Categories = _db.Categories;
-            //ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
-            //ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
+            ViewBag.Categories = _db.Categories;
+            ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
+            ViewBag.Tags = new SelectList(_db.Tags, "Id", "Title");
             ProductUpdateVM returnData = new ProductUpdateVM
             {
                 Name = data.Name,
@@ -178,7 +179,7 @@ namespace WebApplication1.Areas.Admin.Controllers
                 ViewBag.ProductImages = _db.ProductImages.Where(pi => pi.ProductId == id).ToList();
                 return View(vm);
             }
-            var data = await _db.Products.FindAsync(id);
+            var data = await _db.Products.Include(b => b.ProductTags).SingleOrDefaultAsync(b => b.Id == id);
             if (data == null)
             {
                 ViewBag.Categories = _db.Categories;
@@ -212,7 +213,16 @@ namespace WebApplication1.Areas.Admin.Controllers
                 }
                 data.HoverImageUrl = hoverFileName;
             }
-                await _db.SaveChangesAsync();
+
+            List<ProductTags> pts = new List<ProductTags>();
+            foreach (var item in vm.TagIds)
+            {
+                foreach (var item1 in data.ProductTags)
+                {
+                    if (item1.TagId != )
+                }
+            }
+            await _db.SaveChangesAsync();
             TempData["ProductUpdateResponse"] = true;
             return RedirectToAction(nameof(Index));
         }
