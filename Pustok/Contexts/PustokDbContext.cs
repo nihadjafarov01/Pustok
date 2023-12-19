@@ -15,6 +15,7 @@ namespace WebApplication1.Contexts
         public DbSet<Tag> Tags { get; set; }
         public DbSet<BlogTags> BlogTags { get; set; }
         public DbSet<ProductTags> ProductTags { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
 
     }
 }
