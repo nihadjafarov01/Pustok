@@ -27,7 +27,7 @@ namespace WebApplication1
             opt.Password.RequireNonAlphanumeric = false;
             opt.Password.RequiredLength = 4;
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<PustokDbContext>();
-            builder.Services.AddSession();
+			builder.Services.AddSession();
 
             var app = builder.Build();
 

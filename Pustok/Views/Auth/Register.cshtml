@@ -1,29 +1,51 @@
-﻿<div class="container">
-	<form action="#">
+﻿@using WebApplication1.ViewModels.AuthVM
+
+@model RegisterVM
+
+
+@section scripts{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js" integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+}
+
+<div class="container">
+	<form asp-action="Register" method="post">
 		<div class="login-form">
 			<h4 class="login-title">New Customer</h4>
 			<p><span class="font-weight-bold">I am a new customer</span></p>
 			<div class="row">
 				<div class="col-md-12 col-12 mb--15">
-					<label for="email">Full Name</label>
-					<input class="mb-0 form-control" type="text" id="name"
+					<label >Full Name</label>
+					<input asp-for="Fullname" class="mb-0 form-control" 
 						   placeholder="Enter your full name">
+					<span class="text-danger" asp-validation-for="Fullname"></span>
 				</div>
 				<div class="col-12 mb--20">
-					<label for="email">Email</label>
-					<input class="mb-0 form-control" type="email" id="email" placeholder="Enter Your Email Address Here..">
+					<label >Email</label>
+					<input asp-for="Email" class="mb-0 form-control"  placeholder="Enter Your Email Address Here..">
+					<span class="text-danger" asp-validation-for="Email"></span>
+				</div>
+				<div class="col-md-12 col-12 mb--15">
+					<label>Username</label>
+					<input asp-for="Username" class="mb-0 form-control"
+						   placeholder="Enter your username">
+					<span class="text-danger" asp-validation-for="Username"></span>
 				</div>
 				<div class="col-lg-6 mb--20">
-					<label for="password">Password</label>
-					<input class="mb-0 form-control" type="password" id="password" placeholder="Enter your password">
+					<label >Password</label>
+					<input asp-for ="Password" class="mb-0 form-control" placeholder="Enter your password">
+					<span class="text-danger" asp-validation-for="Password"></span>
 				</div>
 				<div class="col-lg-6 mb--20">
-					<label for="password">Repeat Password</label>
-					<input class="mb-0 form-control" type="password" id="repeat-password" placeholder="Repeat your password">
+					<label >Repeat Password</label>
+					<input asp-for="ConfirmPassword" class="mb-0 form-control" placeholder="Repeat your password">
+					<span class="text-danger" asp-validation-for="ConfirmPassword"></span>
 				</div>
-				<div class="col-md-12">
+					<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+				<button class="col-md-12">
 					<a href="#" class="btn btn-outlined">Register</a>
-				</div>
+				</button>
 			</div>
 		</div>
 	</form>
