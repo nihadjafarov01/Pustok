@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using WebApplication1.Helpers;
 using WebApplication1.Models;
 using WebApplication1.ViewModels.AuthVM;
 
@@ -20,7 +21,47 @@ namespace WebApplication1.Controllers
 			_userManager = userManager;
 			_roleManager = roleManager;
 		}
-		public IActionResult Register()
+        public IActionResult Login()
+        {
+            return View();
+        }
+		[HttpPost]
+        public async Task<IActionResult> Login(string? returnUrl, LoginVM vm)
+        {
+            AppUser user;
+            if (vm.UsernameOrEmail.Contains("@"))
+            {
+                user = await _userManager.FindByEmailAsync(vm.UsernameOrEmail);
+            }
+            else
+            {
+                user = await _userManager.FindByNameAsync(vm.UsernameOrEmail);
+            }
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Username or password is wrong");
+                return View(vm);
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, vm.Password, vm.IsRemember, true);
+            if (!result.Succeeded)
+            {
+                if (result.IsLockedOut)
+                {
+                    ModelState.AddModelError("", "Too many attempts wait until " + DateTime.Parse(user.LockoutEnd.ToString()).ToString("HH:mm"));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Username or password is wrong");
+                }
+                return View(vm);
+            }
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Register()
         {
             return View();
         }
@@ -31,12 +72,13 @@ namespace WebApplication1.Controllers
 			{
 				return View(vm);
 			}
-			var result = await _userManager.CreateAsync(new AppUser
-			{
-				Fullname = vm.Fullname,
-				Email = vm.Email,
-				UserName = vm.Username
-			}, vm.Password);
+            var user = new AppUser
+            {
+                Fullname = vm.Fullname,
+                Email = vm.Email,
+                UserName = vm.Username
+            };
+            var result = await _userManager.CreateAsync(user, vm.Password);
 			if (!result.Succeeded)
 			{
 				foreach (var error in result.Errors)
@@ -45,13 +87,36 @@ namespace WebApplication1.Controllers
 				}
 				return View(vm);
 			}
-			//var roleResult = await _userManager.AddToRoleAsync(user, Roles.Member.ToString());
-			//if (!roleResult.Succeeded)
-			//{
-			//	ModelState.AddModelError("", "Something went wrong. Please contact admin");
-			//	return View(vm);
-			//}
-			return View();
-		}
+            var roleResult = await _userManager.AddToRoleAsync(user, Roles.Member.ToString());
+            if (!roleResult.Succeeded)
+            {
+                ModelState.AddModelError("", "Something went wrong. Please contact admin");
+                return View(vm);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<bool> CreateRoles()
+        {
+            foreach (var item in Enum.GetValues(typeof(Roles)))
+            {
+                if (!await _roleManager.RoleExistsAsync(item.ToString()))
+                {
+                    var result = await _roleManager.CreateAsync(new IdentityRole
+                    { 
+                        Name = item.ToString(),
+                    });
+                    if (!result.Succeeded)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 }

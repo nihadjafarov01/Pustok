@@ -1,9 +1,10 @@
 ﻿using WebApplication1.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace WebApplication1.Contexts
 {
-    public class PustokDbContext : DbContext
+    public class PustokDbContext : IdentityDbContext
     {
         public PustokDbContext(DbContextOptions opt) : base(opt) { }
         public DbSet<Slider> Sliders { get; set; }
@@ -16,6 +17,5 @@ namespace WebApplication1.Contexts
         public DbSet<BlogTags> BlogTags { get; set; }
         public DbSet<ProductTags> ProductTags { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
-
     }
 }
