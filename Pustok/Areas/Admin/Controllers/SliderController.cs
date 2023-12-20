@@ -7,10 +7,12 @@ using WebApplication1.Areas.Admin.ViewModels.CommonVM;
 using WebApplication1.Areas.Admin.ViewModels;
 using WebApplication1.ViewModels.CommonVM;
 using WebApplication1.ViewModels.ProductVM;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication1.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin, Admin, Moderator")]
     public class SliderController : Controller
     {
         PustokDbContext _db { get; }

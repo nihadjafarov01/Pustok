@@ -93,7 +93,7 @@ namespace WebApplication1.Controllers
                 ModelState.AddModelError("", "Something went wrong. Please contact admin");
                 return View(vm);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
         public async Task<IActionResult> Logout()
         {
@@ -117,6 +117,10 @@ namespace WebApplication1.Controllers
                 }
             }
             return true;
+        }
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

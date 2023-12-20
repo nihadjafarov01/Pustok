@@ -31,6 +31,7 @@ namespace WebApplication1
             {
                 options.LoginPath = new PathString("/Auth/Login");
                 options.LogoutPath = new PathString("/Auth/Logout");
+                options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
 
                 options.Cookie = new()
                 {
