@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Contexts;
+using WebApplication1.ExternalServices.Implements;
+using WebApplication1.ExternalServices.Interfaces;
 using WebApplication1.Helpers;
 using WebApplication1.Models;
 
@@ -19,7 +21,7 @@ namespace WebApplication1
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:MSSql"]);
             }).AddIdentity<AppUser, IdentityRole>(opt =>
             {
-                opt.SignIn.RequireConfirmedEmail = false;
+                opt.SignIn.RequireConfirmedEmail = true;
                 opt.User.RequireUniqueEmail = true;
                 opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz0123456789._";
                 opt.Lockout.MaxFailedAccessAttempts = 5;
@@ -43,6 +45,7 @@ namespace WebApplication1
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
             });
+            builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddSession();
 
             var app = builder.Build();
