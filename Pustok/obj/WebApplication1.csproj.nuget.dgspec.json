@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Birinci Novbe\\Desktop\\Nihad\\Pustok\\Pustok\\WebApplication1.csproj": {}
+    "C:\\Users\\nihad\\Desktop\\Pustok\\Pustok\\WebApplication1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Birinci Novbe\\Desktop\\Nihad\\Pustok\\Pustok\\WebApplication1.csproj": {
+    "C:\\Users\\nihad\\Desktop\\Pustok\\Pustok\\WebApplication1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Birinci Novbe\\Desktop\\Nihad\\Pustok\\Pustok\\WebApplication1.csproj",
+        "projectUniqueName": "C:\\Users\\nihad\\Desktop\\Pustok\\Pustok\\WebApplication1.csproj",
         "projectName": "WebApplication1",
-        "projectPath": "C:\\Users\\Birinci Novbe\\Desktop\\Nihad\\Pustok\\Pustok\\WebApplication1.csproj",
-        "packagesPath": "C:\\Users\\Birinci Novbe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Birinci Novbe\\Desktop\\Nihad\\Pustok\\Pustok\\obj\\",
+        "projectPath": "C:\\Users\\nihad\\Desktop\\Pustok\\Pustok\\WebApplication1.csproj",
+        "packagesPath": "C:\\Users\\nihad\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nihad\\Desktop\\Pustok\\Pustok\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Birinci Novbe\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\nihad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -59,10 +65,6 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[7.0.11, )"
-            },
-            "NETCore.MailKit": {
-              "target": "Package",
-              "version": "[2.1.0, )"
             },
             "Newtonsoft.Json.Bson": {
               "target": "Package",

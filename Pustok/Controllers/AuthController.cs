@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NETCore.MailKit.Core;
 using System.Data;
 using WebApplication1.Helpers;
 using WebApplication1.Models;
@@ -149,7 +148,7 @@ namespace WebApplication1.Controllers
                 token = token,
                 username = user.UserName
             }, Request.Scheme);
-            _emailService.Send(user.Email, "Email confirmed", "Confirm email");
+            _emailService.Send(user.Email, "Welcome to Pustok", "Congratulations, your account has been successfully created. - Nihad");
         }
         public async Task<IActionResult> EmailConfirmed(string token, string username)
         {
@@ -157,7 +156,7 @@ namespace WebApplication1.Controllers
             if (result.Succeeded)
             {
                 return Ok();
-            }
+            } 
             return Problem();
         }
     }
