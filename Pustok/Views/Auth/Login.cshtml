@@ -15,6 +15,15 @@
 					<label for="password">Password</label>
 					<input class="mb-0 form-control" asp-for="Password" placeholder="Enter your password">
 				</div>
+				@if (Model != null)
+				{
+					@if (!Model.IsConfirmed)
+					{
+						<div class="col-12 mb--20">
+							<p><a href="fsd">Send </a> confirmation Email</p>
+						</div>
+					}
+				}
 				<div class="text-danger col-12 mb--20" asp-validation-summary="ModelOnly"></div>
 				<button class="col-md-12">
 					<a href="#" class="btn btn-outlined">Login</a>

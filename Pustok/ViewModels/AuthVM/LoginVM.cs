@@ -8,5 +8,6 @@ namespace WebApplication1.ViewModels.AuthVM
         [DataType(DataType.Password)]
         public string Password { get; set; }
         public bool IsRemember { get; set; }
+        public bool IsConfirmed { get; set; }
     }
 }

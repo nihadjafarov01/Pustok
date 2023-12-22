@@ -48,11 +48,16 @@ namespace WebApplication1.Controllers
                 return View(vm);
             }
             var result = await _signInManager.PasswordSignInAsync(user, vm.Password, vm.IsRemember, true);
+            vm.IsConfirmed = user.EmailConfirmed;
             if (!result.Succeeded)
             {
                 if (result.IsLockedOut)
                 {
                     ModelState.AddModelError("", "Too many attempts wait until " + DateTime.Parse(user.LockoutEnd.ToString()).ToString("HH:mm"));
+                }
+                else if (!user.EmailConfirmed)
+                {
+                    ModelState.AddModelError("", "Your email isn't confirmed");
                 }
                 else
                 {
@@ -148,7 +153,7 @@ namespace WebApplication1.Controllers
                 token = token,
                 username = user.UserName
             }, Request.Scheme);
-            _emailService.Send(user.Email, "Welcome to Pustok", "Congratulations, your account has been successfully created. - Nihad");
+            _emailService.Send(user.Email, "Welcome to Pustok", "Congratulations, your account has been successfully created. - Nihad", true);
         }
         public async Task<IActionResult> EmailConfirmed(string token, string username)
         {
